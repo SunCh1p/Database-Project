@@ -21,9 +21,19 @@ def index():
     mysql.connection.commit()
     data = cursor.fetchall()
     cursor.close()
-    print(data)
+    #print(data)
     #return render_template('results.html', data=data)
     return render_template('index.html')
+
+@app.route('/catalog')
+def catalog():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * from product")
+    mysql.connection.commit()
+    data = cursor.fetchall()
+    cursor.close()
+    print(data)
+    return render_template('catalog.html',Products=data)
 
 #form
 @app.route('/form')
