@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Catalog</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Product Catalog</h1>
+    </header>
+    <main>
+        <div class="product-list">
+            {% for product in products %}
+            <div class="product">
+                <h2>{{ product[1] }}</h2> <!-- Product Name -->
+                <p><strong>Company:</strong> {{ product[2] }}</p> <!-- Company Name -->
+                <p><strong>Description:</strong> {{ product[3] }}</p> <!-- Description -->
+                <p><strong>Price:</strong> ${{ product[4] }}</p> <!-- Price -->
+                <p><strong>Quantity:</strong> {{ product[5] }}</p> <!-- Quantity -->
+                <p><strong>Compatibility:</strong> {{ product[6] }}</p> <!-- Compatibility -->
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Product Catalog</p>
+    </footer>
+    <script src="scripts.js"></script>
+</body>
+</html>

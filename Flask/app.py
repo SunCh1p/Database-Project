@@ -22,7 +22,34 @@ def index():
     data = cursor.fetchall()
     cursor.close()
     print(data)
-    return f"Done!! Query Result is {data}"
+    #return render_template('results.html', data=data)
+    return render_template('index.html')
+
+#form
+@app.route('/form')
+def form():
+    return render_template('form.html')
+    
+#result from form
+@app.route('/search', methods = ['POST', 'GET'])
+def search():
+    if request.method == 'GET':
+        return "Fill out the Search Form"
+     
+    if request.method == 'POST':
+        name = request.form['name']
+        id = request.form['id']
+        cursor = mysql.connection.cursor()
+        if name:
+            cursor.execute("SELECT * from instructor where name = %s",[name])
+        if id:
+            cursor.execute("SELECT * from instructor where ID = %s",[id])
+        mysql.connection.commit()
+        data = cursor.fetchall()
+        cursor.close()
+        print(data)
+        #return f"Done!! Query Result is {data}"
+        return render_template('results.html', data=data)
 
 if __name__ == "__main__":
     app.run(host='localhost', port=5005)
