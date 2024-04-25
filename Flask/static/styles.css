@@ -1,0 +1,113 @@
+/*Color Pallete*/
+:root{
+    --DarkBlue: #153448;
+    --LightBlue: #3C5B6F;
+    --BorderLightBlue: #536a79;
+}
+html{
+    background-color: var(--DarkBlue);
+}
+body{
+    font-family:Arial, sans-serif;
+}
+.container{
+    padding-right:0;
+    padding-left:0;
+    display:flex;
+    flex-direction:column;
+}
+
+
+/*Navigation Bar Styling*/
+/*Upper section*/
+.Logo{
+    text-decoration:none;
+    color:white;
+}
+.NavBarHeader{
+    margin:0px;
+    padding-top:2%;
+    padding-left:5%;
+    padding-right:5%;
+    display:flex;
+    justify-content:space-between;
+    background-color:var(--DarkBlue);
+    color:white;
+}
+span{
+    color:orange;
+}
+.navAccount{
+    display:flex;
+    align-items:center;
+    justify-content: center;
+}
+.navAccount>li{
+    list-style-type:none;
+    margin-left:10px;
+}
+.navAccount>li>*{
+    text-decoration:none;
+    color:white;
+    float: center;
+}
+
+.regisButton:hover{
+    color:orange;
+    text-decoration:underline;
+}
+
+
+/*Lower section*/
+.NavBar{
+    margin:0px;
+    padding:0px;
+    background-color: var(--LightBlue);
+    overflow:hidden;
+}
+.NavBar>*{
+    display:flex;
+    justify-content:center;
+    list-style-type: none;
+    margin: 0;
+    padding:0;
+    border-top: 1px solid var(--BorderLightBlue);
+}
+
+.NavBarButton{
+    text-decoration: none;
+    color:white;
+    padding: 14px 16px;
+    font-weight: 600;
+    float: center;
+    text-align:center;
+    background-color: var(--LightBlue);
+    border-left:1px solid var(--BorderLightBlue);
+    border-right:1px solid var(--BorderLightBlue);
+    transition: background-color 0.2s ease;
+}
+.NavBarButton:hover{
+    background-color: var(--BorderLightBlue);
+}
+
+.HeroButton{
+    background-color: var(--LightBlue);
+    color:white;
+    font-weight:bold;
+    padding:10px 16px;
+    border: none;
+    border-radius: 16px;
+    transition: background-color 0.2s ease;
+    width: auto;
+}
+.HeroButton:hover{
+    background-color: var(--BorderLightBlue);
+}
+
+.footer-top{
+    background-color: var(--LightBlue);
+}
+.footer{
+    background-color: var(--DarkBlue);
+    color:white;
+}
