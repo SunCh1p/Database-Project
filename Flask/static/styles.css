@@ -29,6 +29,7 @@ body{
     padding-top:2%;
     padding-left:5%;
     padding-right:5%;
+    padding-bottom: 2%;
     display:flex;
     justify-content:space-between;
     background-color:var(--DarkBlue);
@@ -105,9 +106,9 @@ span{
 }
 
 .footer-top{
-    background-color: var(--LightBlue);
 }
 .footer{
+    padding:0%;
     background-color: var(--DarkBlue);
     color:white;
 }
