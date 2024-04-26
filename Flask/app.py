@@ -35,6 +35,10 @@ def catalog():
     print(data)
     return render_template('catalog.html',Products=data)
 
+@app.route('/payment')
+def payment():
+    return
+
 #form
 @app.route('/form')
 def form():
