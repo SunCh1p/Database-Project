@@ -12,15 +12,25 @@
     <body>
         <div class = "NavBarHeader">
             <h1><a href = "./" class="Logo"><i class="fa fa-wrench" aria-hidden="true"></i>Get<span>It</span>Right</a></h1>
-            <ul class="navAccount">
-                {%if username%}
-                    <li><i class="fa fa-user-circle" aria-hidden="true"></i> Hello, {{username}}! |</li>
-                    <li><a href = "./logout" class="regisButton">Logout</a></li>
-                {% else %}
+            {%if username%}
+                <ul class="navAccount user">
+                    <li>{{username}}</li>
+                    <li><i class="fa fa-caret-down arrow-btn" aria-hidden="true"></i></li>
+                    <li>
+                        <ul class="drop-down">
+                            <li><a href = "./logout" class="regisButton">Logout</a></li>
+                            <li><a href = "./" class="regisButton">Profile</a></li>
+                            <li><a href = "./" class="regisButton">Payment</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            {% else %}
+                <ul class="navAccount">
                     <li><a href = "./login" class="regisButton">Login</a></li>
                     <li><a href = "./register" class="regisButton">Register</a></li>
-                {% endif %}
-            </ul>
+                </ul>
+            {% endif %}
+
         </div>
 
         <div class = "NavBar">
@@ -35,7 +45,7 @@
         
         <!--Hero Section--> 
         <div class="px-4 pt-5 my-5 text-center border-bottom">
-            <h1 class="display-4 fw-bold text-body-emphasis"><i class="fa fa-wrench" aria-hidden="true"></i>Git<span>It</span>Right</h1>
+            <h1 class="display-4 fw-bold text-body-emphasis"><i class="fa fa-wrench" aria-hidden="true"></i>Get<span>It</span>Right</h1>
             <div class="col-lg-6 mx-auto">
                 <p class="lead mb-4">We provide a wide selection of computer hardware so you can build your pc.</p>
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
@@ -60,5 +70,8 @@
             </ul>
             <p class="text-center text-white">© 2024 GetItRight</p>
         </footer>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     </body>
 </html>

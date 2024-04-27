@@ -47,10 +47,12 @@ span{
     list-style-type:none;
     margin-left:10px;
 }
-.navAccount>li>*{
+
+.regisButton{
     text-decoration:none;
     color:white;
     float: center;
+
 }
 
 .regisButton:hover{
@@ -111,4 +113,54 @@ span{
     padding:0%;
     background-color: var(--DarkBlue);
     color:white;
+}
+
+.user{
+    padding:0;
+    margin:0;
+}
+
+.highlight{
+    color:orange !important;
+}
+
+.drop-down{
+    display:none;
+    position:absolute;
+    background-color: var(--LightBlue);
+    border: solid 1px var(--BorderLightBlue);
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    z-index:100;
+    padding:5px;
+    margin:0;
+}
+
+.drop-down>*{
+    list-style-type: none;
+}
+
+.rotate180{
+    animation: rotateAnimation180 0.2s ease-in-out forwards;
+}
+
+.rotate360{
+    animation: rotateAnimation360 0.2s ease-in-out forwards;
+}
+
+@keyframes rotateAnimation180{
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(180deg);
+    }
+}
+
+@keyframes rotateAnimation360{
+    0%{
+        transform: rotate(180deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
