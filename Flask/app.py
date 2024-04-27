@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, redirect, url_for, session
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 from markupsafe import escape
+from werkzeug.security import generate_password_hash, check_password_hash
 import re
 
 app = Flask(__name__)
@@ -20,10 +21,7 @@ mysql = MySQL(app)
 #index file
 @app.route('/')
 def index():
-    if('loggedin') in session:
-        print('HELLO')
-    if('username') in session:
-        print('yes')
+    if('loggedin') in session and 'username' in session:
         return render_template('index.html', username=session['username'])
     else:
         return render_template('index.html')
@@ -46,10 +44,10 @@ def login():
         username = request.form['username']
         password = request.form['password']
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s', (username, password,))
+        cursor.execute('SELECT * FROM accounts WHERE username = %s', (escape(username),))
         account = cursor.fetchone()
         cursor.close()
-        if account:
+        if account and check_password_hash(account['password'],password):
             session['loggedin'] = True
             session['id'] = account['id']
             session['username'] = account['username']
@@ -65,6 +63,7 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
+        hashed_password = generate_password_hash(password)
         cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
         account = cursor.fetchone()
@@ -78,7 +77,7 @@ def register():
             msg = 'Please fill out the form!'
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
-            cursor.execute('INSERT INTO accounts VALUES (NULL, %s, %s, %s)', (username, password, email,))
+            cursor.execute('INSERT INTO accounts VALUES (NULL, %s, %s, %s)', (username, hashed_password, email,))
             mysql.connection.commit()
             msg = 'You have successfully registered!'
         cursor.close()
