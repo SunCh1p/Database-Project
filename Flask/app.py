@@ -4,6 +4,8 @@ import MySQLdb.cursors
 from markupsafe import escape
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
+import os
+print(os.getcwd())
 
 app = Flask(__name__)
 
@@ -11,9 +13,9 @@ app.secret_key = 'your secret key'
 
 #Configure MySQL
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'cblaha1'
-app.config['MYSQL_PASSWORD'] = 'Uq2pg8gG'
-app.config['MYSQL_DB'] = 'cblaha1'
+app.config['MYSQL_USER'] = 'jgillis8'
+app.config['MYSQL_PASSWORD'] = '3mkwN8wO'
+app.config['MYSQL_DB'] = 'jgillis8'
 
 #Initialize MySQL
 mysql = MySQL(app)
@@ -31,6 +33,10 @@ def index():
 @app.route('/catalog')
 def catalog():
     cursor = mysql.connection.cursor()
+    with open('/users/kent/student/jgillis8/Database-Project/Flask/schema.sql') as f:
+        cursor.execute(f.read())
+    with open('/users/kent/student/jgillis8/Database-Project/Flask/data.sql') as g:
+        cursor.execute(g.read())
     cursor.execute("SELECT * from product")
     mysql.connection.commit()
     data = cursor.fetchall()
@@ -93,4 +99,4 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
-    app.run(host='localhost', port=5005)
+    app.run(host='localhost', port=5006)
