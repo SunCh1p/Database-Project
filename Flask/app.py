@@ -7,6 +7,8 @@ import re
 import os
 print(os.getcwd())
 
+
+
 app = Flask(__name__)
 
 app.secret_key = 'your secret key'
@@ -20,6 +22,8 @@ app.config['MYSQL_DB'] = 'jgillis8'
 #Initialize MySQL
 mysql = MySQL(app)
 
+
+
 #index file
 @app.route('/')
 def index():
@@ -29,19 +33,52 @@ def index():
         return render_template('index.html')
     
 
+
 #catalog
 @app.route('/catalog')
 def catalog():
     cursor = mysql.connection.cursor()
     with open('/users/kent/student/jgillis8/Database-Project/Flask/schema.sql') as f:
         cursor.execute(f.read())
-    with open('/users/kent/student/jgillis8/Database-Project/Flask/data.sql') as g:
-        cursor.execute(g.read())
+    #with open('/users/kent/student/jgillis8/Database-Project/Flask/data.sql') as g:
+    #    cursor.execute(g.read())
     cursor.execute("SELECT * from product")
     mysql.connection.commit()
     data = cursor.fetchall()
     cursor.close()
     return render_template('catalog.html',Products=data)
+
+@app.route('/Profile', methods=['GET', 'POST'])
+def Profile():
+    msg=''
+    if('loggedin') in session and 'username' in session:
+        current_username = session['username']
+        if request.method == 'POST':
+            first_name = request.form['first_name']
+            last_name = request.form['last_name']
+            street = request.form['street']
+            street_num = request.form['street_num']
+            apt_num = request.form['apt_num']
+            city = request.form['city']
+            zip_code = request.form['zip_code']
+            email=request.form['email']
+            cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('INSERT INTO customer VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)', (current_username, first_name, last_name, email, street_num, street,
+            apt_num, city, zip_code, ))
+            mysql.connection.commit()
+            msg = 'You have successfully changed your profile information'
+            cursor.close()
+
+        return render_template('profilein.html')
+    else:
+        return redirect(url_for('login'))
+
+    #cursor = mysql.connection.cursor()
+    #cursor.execute("SELECT * from product")
+    #mysql.connection.commit()
+    #data = cursor.fetchall()
+    #cursor.close()
+    #return render_template('catalog.html',Products=data)
 
 @app.route('/login', methods=['GET','POST'])
 def login():

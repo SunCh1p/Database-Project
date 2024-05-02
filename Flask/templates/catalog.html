@@ -18,12 +18,13 @@
                     <td>{{d}}</td>
                     {% endfor %}
                 </tr>
-                <p><strong>Product_ID:</strong> {{ product[1] }}</p> <!-- Company Name -->
-                <p><strong>Product_Name:</strong> {{ product[2] }}</p> <!-- Description -->
-                <p><strong>Company_Name:</strong> ${{ product[3] }}</p> <!-- Price -->
-                <p><strong>Description:</strong> {{ product[4] }}</p> <!-- Quantity -->
-                <p><strong>Price:</strong> {{ product[5] }}</p> <!-- Compatibility -->
-                <p><strong>Quantity:</strong> {{ product[6] }}</p> <!-- Quantity -->
+                <p><strong>Product_ID:</strong> {{ product[0] }}</p> <!-- Company Name -->
+                <p><strong>Product_Name:</strong> {{ product[1] }}</p> <!-- Description -->
+                <p><strong>Company_Name:</strong> ${{ product[2] }}</p> <!-- Price -->
+                <p><strong>Description:</strong> {{ product[3] }}</p> <!-- Quantity -->
+                <p><strong>Price:</strong> {{ product[4] }}</p> <!-- Compatibility -->
+                <p><strong>Quantity:</strong> {{ product[5] }}</p> <!-- Quantity -->
+                <p><strong>Compatibility:</strong> {{ product[6] }}</p> <!-- Compatibility -->
               
             </div>
             {% endfor %}
