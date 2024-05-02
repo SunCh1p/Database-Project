@@ -58,9 +58,21 @@ def login():
     return render_template('/login.html')
   
 
-@app.route('/payment')
+@app.route('/payment', methods=['GET','POST'])
 def payment():
-    return
+    #if user is in session
+        if request.method == 'POST' and 'cardNum' in request.form and 'date' in request.form and 'ccv' in request.form and 'zip' in request.form:
+            cardNum = request.form['cardNum']
+            date = request.form['date']
+            ccv = request.form['ccv']
+            zip = request.form['zip']
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            #Check for sql injection
+            #If no injection, run sql query
+            #insert into table
+            cursor.close()
+        return render_template('/payment.html')
+#else redirect login
 
 @app.route('/register', methods=['GET','POST'])
 def register():

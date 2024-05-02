@@ -30,9 +30,9 @@ create table customer(
 );
 
 create table payment(
-    payment_ID varchar(25),
-    customer_ID varchar(25),
-    card_number numeric(16,0),
+    payment_ID varchar(25),  //Update primary key to credit card number
+    customer_ID varchar(25), //only allowing credit cards, so each is unique
+    card_number numeric(16,0), //Add zip code
     expiration_date varchar(5),
     security_code int(3),
     primary key(payment_ID),
