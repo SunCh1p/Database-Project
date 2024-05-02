@@ -9,6 +9,7 @@ html{
 }
 body{
     font-family:Arial, sans-serif;
+    margin: 0;
 }
 .container{
     padding-right:0;
@@ -163,4 +164,25 @@ span{
     100% {
         transform: rotate(360deg);
     }
+}
+
+/*Login Page*/
+.loginMargin{
+    display: flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content: center;
+    background-color:#536a79;
+    padding: 10%;
+}
+
+.loginMargin>h2{
+    color: white;
+    font-weight: 600;
+}
+
+.loginContainer{
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
 }
