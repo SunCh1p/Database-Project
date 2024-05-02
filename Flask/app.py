@@ -37,6 +37,7 @@ def catalog():
     cursor.close()
     return render_template('catalog.html',Products=data)
 
+
 @app.route('/login', methods=['GET','POST'])
 def login():
     msg = ''
@@ -55,6 +56,11 @@ def login():
         else:
             return render_template('/login.html', error = 'Incorrect username/Password!')
     return render_template('/login.html')
+  
+
+@app.route('/payment')
+def payment():
+    return
 
 @app.route('/register', methods=['GET','POST'])
 def register():
