@@ -35,6 +35,7 @@ create table product(
     product_ID varchar(25),
     product_name varchar(100),
     company_name varchar(50),
+    product_type varchar(50),
     descr varchar(100),
     price decimal(10,2),
     quantity int(11),

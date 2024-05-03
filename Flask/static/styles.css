@@ -194,6 +194,7 @@ span{
     flex-direction:column;
     align-items:center;
     justify-content: center;
+    border-radius: 11px;
 }
 
 .loginHeader{

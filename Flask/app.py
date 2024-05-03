@@ -11,9 +11,9 @@ app.secret_key = 'your secret key'
 
 #Configure MySQL
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'aalluhai'
-app.config['MYSQL_PASSWORD'] = 'EGj62ysf'
-app.config['MYSQL_DB'] = 'aalluhai'
+app.config['MYSQL_USER'] = 'cblaha1'
+app.config['MYSQL_PASSWORD'] = 'Uq2pg8gG'
+app.config['MYSQL_DB'] = 'cblaha1'
 
 #Initialize MySQL
 mysql = MySQL(app)
@@ -164,4 +164,4 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
-    app.run(host='localhost', port=5006)
+    app.run(host='localhost', port=5005)
