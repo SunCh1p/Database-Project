@@ -18,10 +18,6 @@ app.config['MYSQL_DB'] = 'cblaha1'
 #Initialize MySQL
 mysql = MySQL(app)
 
-@app.before_request
-def clear_session():
-    session.clear()
-
 #index file
 @app.route('/')
 def index():
