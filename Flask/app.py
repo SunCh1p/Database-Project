@@ -11,9 +11,9 @@ app.secret_key = 'your secret key'
 
 #Configure MySQL
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'cblaha1'
-app.config['MYSQL_PASSWORD'] = 'Uq2pg8gG'
-app.config['MYSQL_DB'] = 'cblaha1'
+app.config['MYSQL_USER'] = 'aalluhai'
+app.config['MYSQL_PASSWORD'] = 'EGj62ysf'
+app.config['MYSQL_DB'] = 'aalluhai'
 
 #Initialize MySQL
 mysql = MySQL(app)
@@ -27,15 +27,53 @@ def index():
         return render_template('index.html')
     
 
-#catalog
 @app.route('/catalog')
 def catalog():
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * from product")
-    mysql.connection.commit()
     data = cursor.fetchall()
     cursor.close()
-    return render_template('catalog.html',Products=data)
+    return render_template('catalog.html', Products=data)
+
+@app.route('/cart', methods=['GET', 'POST'])
+def cart():
+    if request.method == 'POST':
+        if 'loggedin' in session:  
+            product_id = request.form.get('product_id')
+            quantity = request.form.get('quantity')
+
+            if product_id and quantity:
+                # Check if the product exists in the product table
+                cursor = mysql.connection.cursor()
+                cursor.execute("SELECT * FROM product WHERE product_id = %s", (product_id,))
+                product = cursor.fetchone()
+                if product:
+                    # Insert into orders table only if the product exists
+                    cursor.execute("INSERT INTO orders (customer_id, product_id, quantity) VALUES (%s, %s, %s)",
+                                   (session['id'], product_id, quantity))
+                    mysql.connection.commit()
+                    cursor.close()
+
+                    msg = 'Product added to cart'
+                    return redirect(url_for('cart'))
+                else:
+                    msg = 'Product does not exist'
+            else:
+                msg = 'Product ID and quantity are required'
+        else:
+            return redirect(url_for('login'))  # Redirect to login if not logged in
+    
+    if 'loggedin' in session:
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT * FROM product")
+        products = cursor.fetchall()
+        total_price = sum(product[4] for product in products)  # Accessing price from tuple by index
+        cursor.close()
+        
+        return render_template('cart.html', products=products, total_price=total_price)
+    else:
+        return redirect(url_for('login'))
+
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -93,4 +131,4 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
-    app.run(host='localhost', port=5005)
+    app.run(host='localhost', port=5006)
