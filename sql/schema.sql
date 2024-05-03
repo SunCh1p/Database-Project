@@ -80,3 +80,12 @@ CREATE TABLE Compatibility (
     foreign key (product_ID) references product(product_ID) on delete cascade,
     foreign key (product2_ID) references product(product_ID) on delete cascade
 );
+
+CREATE TABLE IF NOT EXISTS cart (
+    customer_ID int(11),
+    product_ID varchar(25),
+    quantity int(11),
+    PRIMARY KEY (customer_ID, product_ID),
+    FOREIGN KEY (customer_ID) REFERENCES customer(customer_ID),
+    FOREIGN KEY (product_ID) REFERENCES product(product_ID)
+);

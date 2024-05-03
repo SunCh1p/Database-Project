@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, session
+from flask import Flask, render_template, request, session, redirect, url_for, flash
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 from markupsafe import escape
@@ -11,12 +11,14 @@ app.secret_key = 'your secret key'
 
 #Configure MySQL
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'cblaha1'
-app.config['MYSQL_PASSWORD'] = 'Uq2pg8gG'
-app.config['MYSQL_DB'] = 'cblaha1'
+app.config['MYSQL_USER'] = 'aalluhai'
+app.config['MYSQL_PASSWORD'] = 'EGj62ysf'
+app.config['MYSQL_DB'] = 'aalluhai'
 
 #Initialize MySQL
 mysql = MySQL(app)
+
+
 
 #index file
 @app.route('/')
@@ -26,16 +28,89 @@ def index():
     else:
         return render_template('index.html')
     
-
-#catalog
-@app.route('/catalog')
+@app.route('/catalog', methods=['GET', 'POST'])
 def catalog():
+    if request.method == 'POST':
+        # Get the product ID from the form data
+        product_id = request.form.get('product_id')
+        if product_id:
+            # Check if the user is logged in
+            if 'loggedin' in session:
+                # Get the customer ID from the session
+                customer_id = session['id']
+                print("Customer ID:", customer_id)  # Add this print statement to check the customer ID
+
+                # Insert the item into the cart table
+                cursor = mysql.connection.cursor()
+                cursor.execute("INSERT INTO cart (customer_id, product_id, quantity) VALUES (%s, %s, 1) ON DUPLICATE KEY UPDATE quantity = quantity + 1", (customer_id, product_id))
+                mysql.connection.commit()
+                cursor.close()
+                flash('Product added to cart.', 'success')
+            else:
+                flash('Please log in to add products to the cart.', 'error')
+
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * from product")
-    mysql.connection.commit()
+    cursor.execute("SELECT * FROM product")
     data = cursor.fetchall()
     cursor.close()
-    return render_template('catalog.html',Products=data)
+    return render_template('catalog.html', Products=data)
+
+
+@app.route('/cart', methods=['GET', 'POST'])
+def cart():
+    if request.method == 'POST':
+        # Handle POST request to remove a product from the cart
+        if 'loggedin' in session:
+            product_id_to_remove = request.form.get('remove_product_id')
+            if product_id_to_remove:
+                # Retrieve the customer ID from the session
+                customer_id = session['id']
+                print("Customer ID:", customer_id)  # Add this print statement to check the customer ID
+                
+                # Delete the item from the cart table
+                cursor = mysql.connection.cursor()
+                cursor.execute("DELETE FROM cart WHERE customer_id = %s AND product_id = %s", (customer_id, product_id_to_remove))
+                mysql.connection.commit()
+                cursor.close()
+                flash('Product removed from cart.', 'success')
+            else:
+                flash('Product ID to remove not provided.', 'error')
+        else:
+            flash('Please log in to remove products from the cart.', 'error')
+        return redirect(url_for('cart'))
+
+    # Handle GET request to display the cart
+    if 'loggedin' in session:
+        # Retrieve the customer ID from the session
+        customer_id = session['id']
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT p.*, c.quantity FROM product p INNER JOIN cart c ON p.product_ID = c.product_ID WHERE c.customer_ID = %s", (customer_id,))
+        products = cursor.fetchall()
+        
+        sum = 0
+        quantitys=[]
+        for item in products:
+             product_id = item[0]  
+             price = item[4]
+             cursor.execute('SELECT quantity FROM cart WHERE product_ID = %s AND customer_ID = %s', (product_id, session['id']))
+             quantity= cursor.fetchone()
+             if quantity:
+                sum+=quantity[0]*price
+                quantitys.append(quantity[0])
+
+        cursor.close()
+
+        return render_template('cart.html', products=products, total_price=sum ,total_quantity=quantitys)
+    else:
+        flash('Please log in to view your cart.', 'error')
+        return redirect(url_for('login'))
+
+#counter =0
+#for loop we already have 
+    #in products after we print all the staf 
+    #print quantitys at index counter 
+    #counter++
+
 
 
 @app.route('/login', methods=['GET','POST'])
@@ -102,4 +177,4 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
-    app.run(host='localhost', port=5005)
+    app.run(host='localhost', port=5006)
