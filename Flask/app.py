@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, session
+from flask import Flask, render_template, request, session, redirect, url_for, flash
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 from markupsafe import escape
@@ -26,56 +26,73 @@ def index():
     else:
         return render_template('index.html')
     
-
-@app.route('/catalog', methods=['Get','Post'])
+@app.route('/catalog', methods=['GET', 'POST'])
 def catalog():
-    if(request.method == 'POST'):
-        #insert code to add items to cart here
-        print('YEA')
+    if request.method == 'POST':
+        # Get the product ID from the form data
+        product_id = request.form.get('product_id')
+        if product_id:
+            # Check if the product is already in the cart
+            if 'cart' not in session:
+                session['cart'] = {}  # Initialize cart if not already present in session
+            cart = session['cart']
+
+            # Update cart: Increment quantity if product is already in the cart, otherwise add it
+            cart[product_id] = cart.get(product_id, 0) + 1
+            session['cart'] = cart
+            print('Product added to cart:', product_id)
+
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * from product")
+    cursor.execute("SELECT * FROM product")
     data = cursor.fetchall()
     cursor.close()
     return render_template('catalog.html', Products=data)
 
+
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
     if request.method == 'POST':
-        if 'loggedin' in session:  
-            product_id = request.form.get('product_id')
-            quantity = request.form.get('quantity')
-
-            if product_id and quantity:
-                # Check if the product exists in the product table
-                cursor = mysql.connection.cursor()
-                cursor.execute("SELECT * FROM product WHERE product_id = %s", (product_id,))
-                product = cursor.fetchone()
-                if product:
-                    # Insert into orders table only if the product exists
-                    cursor.execute("INSERT INTO orders (customer_id, product_id, quantity) VALUES (%s, %s, %s)",
-                                   (session['id'], product_id, quantity))
-                    mysql.connection.commit()
-                    cursor.close()
-
-                    msg = 'Product added to cart'
-                    return redirect(url_for('cart'))
+        # Handle POST request to remove a product from the cart
+        if 'loggedin' in session:
+            product_id_to_remove = request.form.get('remove_product_id')
+            if product_id_to_remove:
+                # Retrieve cart data from session
+                cart = session.get('cart', {})
+                # Remove the product from the cart if it exists
+                if product_id_to_remove in cart:
+                    del cart[product_id_to_remove]
+                    session['cart'] = cart
+                    flash('Product removed from cart.', 'success')
                 else:
-                    msg = 'Product does not exist'
+                    flash('Product not found in cart.', 'error')
             else:
-                msg = 'Product ID and quantity are required'
+                flash('Product ID to remove not provided.', 'error')
         else:
-            return redirect(url_for('login'))  # Redirect to login if not logged in
-    
+            flash('Please log in to remove products from the cart.', 'error')
+        return redirect(url_for('cart'))
+
+    # Handle GET request to display the cart
     if 'loggedin' in session:
         cursor = mysql.connection.cursor()
         cursor.execute("SELECT * FROM product")
         products = cursor.fetchall()
-        total_price = sum(product[4] for product in products)  # Accessing price from tuple by index
         cursor.close()
         
-        return render_template('cart.html', products=products, total_price=total_price)
+        # Retrieve cart data from session
+        cart = session.get('cart', {})
+        
+        # Convert product IDs to strings in the cart
+        cart_str = {str(product_id): quantity for product_id, quantity in cart.items()}
+        
+        # Calculate total price of items in the cart
+        total_price = sum(product[4] * cart_str.get(str(product[0]), 0) for product in products)  # Accessing price from tuple by index
+        
+        return render_template('cart.html', products=products, cart=cart_str, total_price=total_price)
     else:
+        flash('Please log in to view your cart.', 'error')
         return redirect(url_for('login'))
+
+
 
 
 @app.route('/login', methods=['GET','POST'])
