@@ -18,9 +18,7 @@ app.config['MYSQL_DB'] = 'aalluhai'
 #Initialize MySQL
 mysql = MySQL(app)
 
-@app.before_request
-def clear_session():
-    session.clear()
+
 
 #index file
 @app.route('/')
@@ -85,21 +83,33 @@ def cart():
     if 'loggedin' in session:
         # Retrieve the customer ID from the session
         customer_id = session['id']
-        print("Customer ID:", customer_id)  # Add this print statement to check the customer ID
-
         cursor = mysql.connection.cursor()
-        cursor.execute("SELECT p.*, c.quantity FROM product p INNER JOIN cart c ON p.product_id = c.product_id WHERE c.customer_id = %s", (customer_id,))
+        cursor.execute("SELECT p.*, c.quantity FROM product p INNER JOIN cart c ON p.product_ID = c.product_ID WHERE c.customer_ID = %s", (customer_id,))
         products = cursor.fetchall()
+        
+        sum = 0
+        quantitys=[]
+        for item in products:
+             product_id = item[0]  
+             price = item[4]
+             cursor.execute('SELECT quantity FROM cart WHERE product_ID = %s AND customer_ID = %s', (product_id, session['id']))
+             quantity= cursor.fetchone()
+             if quantity:
+                sum+=quantity[0]*price
+                quantitys.append(quantity[0])
+
         cursor.close()
 
-        total_price = sum(product[4] * product[5] for product in products)  # Calculating total price
-
-        return render_template('cart.html', products=products, total_price=total_price)
+        return render_template('cart.html', products=products, total_price=sum ,total_quantity=quantitys)
     else:
         flash('Please log in to view your cart.', 'error')
         return redirect(url_for('login'))
 
-
+#counter =0
+#for loop we already have 
+    #in products after we print all the staf 
+    #print quantitys at index counter 
+    #counter++
 
 
 @app.route('/login', methods=['GET','POST'])

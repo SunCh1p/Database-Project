@@ -1,48 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart</title>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Get It Right</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='cart.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    </head>
+
+    <body>
+        <div class = "NavBarHeader">
+            <h1><a href = "./" class="Logo"><i class="fa fa-wrench" aria-hidden="true"></i>Get<span>It</span>Right</a></h1>
+            {%if username%}
+                <ul class="navAccount user">
+                    <li>{{username}}</li>
+                    <li><i class="fa fa-caret-down arrow-btn" aria-hidden="true"></i></li>
+                    <li>
+                        <ul class="drop-down">
+                            <li><a href = "./logout" class="regisButton">Logout</a></li>
+                            <li><a href = "./" class="regisButton">Profile</a></li>
+                            <li><a href = "./" class="regisButton">Payment</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            {% else %}
+                <ul class="navAccount">
+                    <li><a href = "./login" class="regisButton">Login</a></li>
+                    <li><a href = "./register" class="regisButton">Register</a></li>
+                </ul>
+            {% endif %}
+
+        </div>
+
+        <div class = "NavBar">
+            <ul>
+                <a href = "./catalog" class="NavBarButton">Catalog</a>
+                <a href = "./cart" class="NavBarButton">Cart</a>
+                <a href = "./" class="NavBarButton">Check Out</a></li>
+                <a href = "./" class="NavBarButton">Contact</a>
+                <i class="fa fa-search NavBarButton" aria-hidden="true"></i>
+            </ul>
+        </div>
+        
+
     <h1>Shopping Cart</h1>
     
-    {% if cart %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Product ID</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                    <th>Remove</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in products %}
-                    <tr>
-                        <td>{{ product[0] }}</td> <!-- Assuming product ID is already a string -->
-                        <td>{{ product[1] }}</td>
-                        <td>${{ '%.2f' % product[4] }}</td> <!-- Format price to two decimal places -->
-                        <td>{{ cart.get(product[0], 0) }}</td>
-                        <td>${{ '%.2f' % (product[4] * cart.get(product[0], 0)) }}</td> <!-- Calculate total with proper formatting -->
-                        <td>
-                            <form action="/cart" method="post">
-                                <input type="hidden" name="remove_product_id" value="{{ product[0] }}">
-                                <button type="submit">Remove</button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="product-list">
+        {% set counter = 0 %}
+        {% for product in products %}
+            <div class="product">
+                <p><strong>Product ID:</strong> {{ product[0] }}</p>
+                <p><strong>Product Name:</strong> {{ product[1] }}</p>
+                <p><strong>Company Name:</strong> {{ product[2] }}</p>
+                <p><strong>Description:</strong> {{ product[3] }}</p>
+                <p><strong>Price:</strong> {{ product[4] }}</p>
+                <p><strong>Quantity:</strong> {{ total_quantity[loop.index0] }}</p> {# Use loop.index0 as the index #}
+             
+            </div>
+            {% set counter = counter + 1 %}
+        {% endfor %}  
+        
         <p>Total Price: ${{ '%.2f' % total_price }}</p> <!-- Format total price -->
-    {% else %}
-        <p>Your cart is empty.</p>
-    {% endif %}
-    
+    </div>
     <a href="{{ url_for('catalog') }}">Continue Shopping</a>
 </body>
 </html>
