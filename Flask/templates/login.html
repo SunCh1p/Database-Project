@@ -10,32 +10,40 @@
 </head> 
 <body>
     <div class = "NavBarHeader">
-        <h1><a href = "./" class="Logo"><i class="fa fa-wrench" aria-hidden="true"></i>Get<span>It</span>Right</a></h1>
-    </div>
-
-    <div class = "NavBar">
-        <ul>
-            <a href = "./" class="NavBarButton"><i class="fa fa-home" aria-hidden="true"></i></a>
-            <a href = "./catalog" class="NavBarButton">Catalog</a>
-            <a href = "./" class="NavBarButton">Cart</a>
-            <a href = "./" class="NavBarButton">Check Out</a></li>
-            <a href = "./" class="NavBarButton">Contact</a>
-            <i class="fa fa-search NavBarButton" aria-hidden="true"></i>
-        </ul>
+        <div class="NavBarLoginHeader">
+            <a href='./' class="loginReturnHome"><i class="fa fa-chevron-left" aria-hidden="true"></i></a>
+            <h1 class="NavBarHeaderCenter"><a href = "./" class="Logo"><i class="fa fa-wrench" aria-hidden="true"></i>Get<span>It</span>Right</a></h1>
+        </div>
     </div>
     
     <div class = "loginMargin">
-        <h2>Your account</h2>
         <div class="loginContainer">
             <form action="/login" method="post">
-                <label for="username">Username:</label><br>
-                <input type="text" id="username" name="username" required><br>
-                <label for="password">Password:</label><br>
-                <input type="password" id="password" name="password" required><br><br>
-                {%if error%}
-                <p>{{error}}</p>
-                {%endif%}
-                <input type="submit" value="Login">
+                <div class="loginwrapper">
+                    <div class="loginHeader">
+                        <h2>Your account</h2>
+                    </div>
+                    <div class="loginContent">
+                        <h3>Sign in</h3>
+                        <div class="loginrow">
+                            <div class="loginicon">
+                                <i class="fa fa-user-circle" aria-hidden="true"></i>
+                            </div>
+                            <input type="text" id="username" name="username" placeholder="Username" required>
+                        </div>
+                        <div class="loginrow">
+                            <div class="loginicon">
+                                <i class="fa fa-lock" aria-hidden="true"></i>
+                            </div>
+                            <input type="password" id="password" name="password" required placeholder="Password">
+                        </div>
+                        {%if error%}
+                        <p>{{error}}</p>
+                        {%endif%}
+                        <input type="submit" value="Login" class="loginSubmit"><br>
+                        Not a member, <a href = "./register">Sign up</a>
+                    </div>
+                </div>
             </form>
         </div>
     </div>

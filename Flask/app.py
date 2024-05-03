@@ -64,6 +64,9 @@ def payment():
 
 @app.route('/register', methods=['GET','POST'])
 def register():
+    if('loggedin') in session and 'username' in session:
+        return redirect(url_for('index'))
+
     msg=''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
         username = request.form['username']

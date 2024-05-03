@@ -3,6 +3,7 @@
     --DarkBlue: #153448;
     --LightBlue: #3C5B6F;
     --BorderLightBlue: #536a79;
+    --background: #374e5d;
 }
 html{
     background-color: var(--DarkBlue);
@@ -172,8 +173,9 @@ span{
     flex-direction:column;
     align-items:center;
     justify-content: center;
-    background-color:#536a79;
+    background-color:rgb(76, 76, 76);
     padding: 10%;
+    border-top: solid 1px var(--BorderLightBlue);
 }
 
 .loginMargin>h2{
@@ -183,6 +185,99 @@ span{
 
 .loginContainer{
     background-color: white;
-    padding: 20px;
-    border-radius: 10px;
+    width: 50%;
+    border-radius: 11px;
 }
+
+.loginwrapper{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content: center;
+}
+
+.loginHeader{
+    background-color:#153448;
+    width: 100%;
+    color:white;
+    display: flex;
+    justify-content: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 20px;
+}
+
+.loginContent{
+    padding: 40px;
+    padding-top: 20px;
+    text-align: center;
+    font-size:larger;
+    width: 100%;
+}
+
+.loginContent>h3{
+    margin-bottom:20px;
+}
+
+
+
+.loginrow{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 40px;
+}
+
+.loginrow > input{
+    flex-grow: 1;
+    border: solid 1px lightgray;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.loginicon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--DarkBlue);
+    color:white;
+    padding:10px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.loginSubmit{
+    color: white;
+    background-color:var(--LightBlue);
+    border: none;
+    width:100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    transition: background-color 0.2s ease;
+    padding: 5px;
+}
+
+.loginSubmit:hover{
+    color: orange;
+    background-color: var(--BorderLightBlue);
+}
+.NavBarLoginHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.loginReturnHome{
+    margin-left: 0px;
+    text-decoration: none;
+    color: white;
+}
+
+.loginReturnHome:hover{
+    color: orange;
+    border-bottom: solid 1px orange;
+}
+.NavBarHeaderCenter{
+    margin: 0 auto;
+}
+
