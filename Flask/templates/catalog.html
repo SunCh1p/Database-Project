@@ -33,21 +33,21 @@
     <main>
         <div class="product-list">
             {% for product in Products %}
-            <div class="product">
-                <p><strong>Product ID:</strong> {{ product[0] }}</p>
-                <p><strong>Product Name:</strong> {{ product[1] }}</p>
-                <p><strong>Company Name:</strong> {{ product[2] }}</p>
-                <p><strong>Description:</strong> {{ product[3] }}</p>
-                <p><strong>Price:</strong> {{ product[4] }}</p>
-                <p><strong>Quantity:</strong> {{ product[5] }}</p>
-                <!-- Form to add product to cart -->
-                <form action="/catalog" method="post">
-                    <input type="hidden" name="product_id" value="{{ product[0] }}">
-                    <label for="quantity{{ product[0] }}">Quantity:</label>
-                    <input type="number" id="quantity{{ product[0] }}" name="quantity" value="1" min="1">
-                    <button type="submit">Add to Cart</button>
-                </form>
-            </div>
+                <div class="product">
+                    <p><strong>Product ID:</strong> {{ product[0] }}</p>
+                    <p><strong>Product Name:</strong> {{ product[1] }}</p>
+                    <p><strong>Company Name:</strong> {{ product[2] }}</p>
+                    <p><strong>Description:</strong> {{ product[3] }}</p>
+                    <p><strong>Price:</strong> {{ product[4] }}</p>
+                    <p><strong>Quantity:</strong> {{ product[5] }}</p>
+                    <!-- Form to add product to cart -->
+                    <form action="/catalog" method="post">
+                        <input type="hidden" name="product_id" value="{{ product[0] }}">
+                        <label for="quantity{{ product[0] }}">Quantity:</label>
+                        <input type="number" id="quantity{{ product[0] }}" name="quantity" value="1" min="1">
+                        <button type="submit">Add to Cart</button>
+                    </form>
+                </div>
             {% endfor %}
         </div>
     </main>
