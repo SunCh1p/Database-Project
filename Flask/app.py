@@ -27,8 +27,11 @@ def index():
         return render_template('index.html')
     
 
-@app.route('/catalog')
+@app.route('/catalog', methods=['Get','Post'])
 def catalog():
+    if(request.method == 'POST'):
+        #insert code to add items to cart here
+        print('YEA')
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * from product")
     data = cursor.fetchall()

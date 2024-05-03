@@ -38,7 +38,7 @@
                 <p><strong>Price:</strong> {{ product[4] }}</p>
                 <p><strong>Quantity:</strong> {{ product[5] }}</p>
                 <!-- Form to add product to cart -->
-                <form action="/cart" method="post">
+                <form action="/catalog" method="post">
                     <input type="hidden" name="product_id" value="{{ product[0] }}">
                     <label for="quantity{{ product[0] }}">Quantity:</label>
                     <input type="number" id="quantity{{ product[0] }}" name="quantity" value="1" min="1">
