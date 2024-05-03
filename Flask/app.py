@@ -63,8 +63,20 @@ def Profile():
             zip_code = request.form['zip_code']
             email=request.form['email']
             cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('INSERT INTO customer VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)', (current_username, first_name, last_name, email, street_num, street,
-            apt_num, city, zip_code, ))
+            #cursor.execute('INSERT INTO customer VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)', (current_username, first_name, last_name, email, street_num, street,
+            #apt_num, city, zip_code, ))
+            cursor.execute("""INSERT INTO customer (customer_ID, FirstName, LastName, email, street_number, street_name, apt_num, city, zip_code)
+                              VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                              ON DUPLICATE KEY UPDATE
+                              FirstName = VALUES(FirstName),
+                              LastName = VALUES(LastName),
+                              email = VALUES(email),
+                              street_number = VALUES(street_number),
+                              street_name = VALUES(street_name),
+                              apt_num = VALUES(apt_num),
+                              city = VALUES(city),
+                              zip_code = VALUES(zip_code)""",
+                           (current_username, first_name, last_name, email, street_num, street, apt_num, city, zip_code))
             mysql.connection.commit()
             msg = 'You have successfully changed your profile information'
             cursor.close()
