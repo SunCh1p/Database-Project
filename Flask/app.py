@@ -32,15 +32,20 @@ def catalog():
         # Get the product ID from the form data
         product_id = request.form.get('product_id')
         if product_id:
-            # Check if the product is already in the cart
-            if 'cart' not in session:
-                session['cart'] = {}  # Initialize cart if not already present in session
-            cart = session['cart']
+            # Check if the user is logged in
+            if 'loggedin' in session:
+                # Get the customer ID from the session
+                customer_id = session['id']
+                print("Customer ID:", customer_id)  # Add this print statement to check the customer ID
 
-            # Update cart: Increment quantity if product is already in the cart, otherwise add it
-            cart[product_id] = cart.get(product_id, 0) + 1
-            session['cart'] = cart
-            print('Product added to cart:', product_id)
+                # Insert the item into the cart table
+                cursor = mysql.connection.cursor()
+                cursor.execute("INSERT INTO cart (customer_id, product_id, quantity) VALUES (%s, %s, 1) ON DUPLICATE KEY UPDATE quantity = quantity + 1", (customer_id, product_id))
+                mysql.connection.commit()
+                cursor.close()
+                flash('Product added to cart.', 'success')
+            else:
+                flash('Please log in to add products to the cart.', 'error')
 
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM product")
@@ -56,15 +61,16 @@ def cart():
         if 'loggedin' in session:
             product_id_to_remove = request.form.get('remove_product_id')
             if product_id_to_remove:
-                # Retrieve cart data from session
-                cart = session.get('cart', {})
-                # Remove the product from the cart if it exists
-                if product_id_to_remove in cart:
-                    del cart[product_id_to_remove]
-                    session['cart'] = cart
-                    flash('Product removed from cart.', 'success')
-                else:
-                    flash('Product not found in cart.', 'error')
+                # Retrieve the customer ID from the session
+                customer_id = session['id']
+                print("Customer ID:", customer_id)  # Add this print statement to check the customer ID
+                
+                # Delete the item from the cart table
+                cursor = mysql.connection.cursor()
+                cursor.execute("DELETE FROM cart WHERE customer_id = %s AND product_id = %s", (customer_id, product_id_to_remove))
+                mysql.connection.commit()
+                cursor.close()
+                flash('Product removed from cart.', 'success')
             else:
                 flash('Product ID to remove not provided.', 'error')
         else:
@@ -73,21 +79,18 @@ def cart():
 
     # Handle GET request to display the cart
     if 'loggedin' in session:
+        # Retrieve the customer ID from the session
+        customer_id = session['id']
+        print("Customer ID:", customer_id)  # Add this print statement to check the customer ID
+
         cursor = mysql.connection.cursor()
-        cursor.execute("SELECT * FROM product")
+        cursor.execute("SELECT p.*, c.quantity FROM product p INNER JOIN cart c ON p.product_id = c.product_id WHERE c.customer_id = %s", (customer_id,))
         products = cursor.fetchall()
         cursor.close()
-        
-        # Retrieve cart data from session
-        cart = session.get('cart', {})
-        
-        # Convert product IDs to strings in the cart
-        cart_str = {str(product_id): quantity for product_id, quantity in cart.items()}
-        
-        # Calculate total price of items in the cart
-        total_price = sum(product[4] * cart_str.get(str(product[0]), 0) for product in products)  # Accessing price from tuple by index
-        
-        return render_template('cart.html', products=products, cart=cart_str, total_price=total_price)
+
+        total_price = sum(product[4] * product[5] for product in products)  # Calculating total price
+
+        return render_template('cart.html', products=products, total_price=total_price)
     else:
         flash('Please log in to view your cart.', 'error')
         return redirect(url_for('login'))

@@ -23,11 +23,11 @@
             <tbody>
                 {% for product in products %}
                     <tr>
-                        <td>{{ product[0]|string }}</td>  <!-- Convert product ID to string -->
+                        <td>{{ product[0] }}</td> <!-- Assuming product ID is already a string -->
                         <td>{{ product[1] }}</td>
-                        <td>${{ product[4] }}</td>
-                        <td>{{ cart.get(product[0]|string, 0) }}</td>  <!-- Convert product ID to string -->
-                        <td>${{ product[4] * cart.get(product[0]|string, 0) }}</td>
+                        <td>${{ '%.2f' % product[4] }}</td> <!-- Format price to two decimal places -->
+                        <td>{{ cart.get(product[0], 0) }}</td>
+                        <td>${{ '%.2f' % (product[4] * cart.get(product[0], 0)) }}</td> <!-- Calculate total with proper formatting -->
                         <td>
                             <form action="/cart" method="post">
                                 <input type="hidden" name="remove_product_id" value="{{ product[0] }}">
@@ -38,7 +38,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        <p>Total Price: ${{ total_price }}</p>
+        <p>Total Price: ${{ '%.2f' % total_price }}</p> <!-- Format total price -->
     {% else %}
         <p>Your cart is empty.</p>
     {% endif %}
