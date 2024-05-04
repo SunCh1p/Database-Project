@@ -61,20 +61,22 @@ def cart():
     if request.method == 'POST':
         # Handle POST request to remove a product from the cart
         if 'loggedin' in session:
-            product_id_to_remove = request.form.get('remove_product_id')
-            if product_id_to_remove:
+            print("hello")
+            remove = request.form['product_id']
+            if remove:
+                print("hi")
                 # Retrieve the customer ID from the session
                 customer_id = session['id']
                 print("Customer ID:", customer_id)  # Add this print statement to check the customer ID
-                
+                print(remove)
                 # Delete the item from the cart table
+                mysql.connection.cursor()
                 cursor = mysql.connection.cursor()
-                cursor.execute("DELETE FROM cart WHERE customer_id = %s AND product_id = %s", (customer_id, product_id_to_remove))
+                
+                cursor.execute("DELETE FROM cart WHERE customer_id = %s AND product_id = %s", (customer_id, remove))
                 mysql.connection.commit()
-                cursor.close()
                 flash('Product removed from cart.', 'success')
-            else:
-                flash('Product ID to remove not provided.', 'error')
+                cursor.close()
         else:
             flash('Please log in to remove products from the cart.', 'error')
         return redirect(url_for('cart'))
@@ -86,7 +88,7 @@ def cart():
         cursor = mysql.connection.cursor()
         cursor.execute("SELECT p.*, c.quantity FROM product p INNER JOIN cart c ON p.product_ID = c.product_ID WHERE c.customer_ID = %s", (customer_id,))
         products = cursor.fetchall()
-        
+         
         sum = 0
         quantitys=[]
         for item in products:
@@ -177,4 +179,4 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
-    app.run(host='localhost', port=5006)
+    app.run(host='localhost', port=5005)
