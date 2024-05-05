@@ -11,36 +11,10 @@
 </head>
 <body>
     <div class = "NavBarHeader">
-        <h1><a href = "./" class="Logo"><i class="fa fa-wrench" aria-hidden="true"></i>Get<span>It</span>Right</a></h1>
-        {%if username%}
-            <ul class="navAccount user">
-                <li>{{username}}</li>
-                <li><i class="fa fa-caret-down arrow-btn" aria-hidden="true"></i></li>
-                <li>
-                    <ul class="drop-down">
-                        <li><a href = "./logout" class="regisButton">Logout</a></li>
-                        <li><a href = "./" class="regisButton">Profile</a></li>
-                        <li><a href = "./" class="regisButton">Payment</a></li>
-                    </ul>
-                </li>
-            </ul>
-        {% else %}
-            <ul class="navAccount">
-                <li><a href = "./login" class="regisButton">Login</a></li>
-                <li><a href = "./register" class="regisButton">Register</a></li>
-            </ul>
-        {% endif %}
-
-    </div>
-
-    <div class = "NavBar">
-        <ul>
-            <a href = "./catalog" class="NavBarButton">Catalog</a>
-            <a href = "./cart" class="NavBarButton">Cart</a>
-            <a href = "./" class="NavBarButton">Check Out</a></li>
-            <a href = "./" class="NavBarButton">Contact</a>
-            <i class="fa fa-search NavBarButton" aria-hidden="true"></i>
-        </ul>
+        <div class="NavBarLoginHeader">
+            <a href='./' class="loginReturnHome"><i class="fa fa-chevron-left" aria-hidden="true"></i></a>
+            <h1 class="NavBarHeaderCenter"><a href = "./" class="Logo"><i class="fa fa-wrench" aria-hidden="true"></i>Get<span>It</span>Right</a></h1>
+        </div>
     </div>
     
 
