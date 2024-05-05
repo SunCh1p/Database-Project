@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Payment Info</title>
+    </head>
+    <body>
+        <h2>Payment Information</h2>
+
+        <form action="/payment" method="post">
+            <label for="cardNum">Credit Card Number:</label><br>
+            <input type="text" id="cardNum" name="cardNum" required><br><br>
+            <label for="date">Expiration Date:</label><br>
+            <input type="text" id="date" name="date" required><br><br>
+            <label for="ccv"> CCV:</label><br>
+            <input type="int" id="ccv" name="ccv" required><br><br>
+            <label for="zip"> Zip Code:</label><br>
+            <input type="int" id="zip" name="zip" required><br><br>
+            <input type="submit" value="Submit">
+
+            
+        </form> 
+    </body>
+</html>

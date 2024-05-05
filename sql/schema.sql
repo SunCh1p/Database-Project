@@ -43,12 +43,11 @@ create table product(
 
 
 create table payment(
-    payment_ID varchar(25),
     customer_ID int(11),
     card_number numeric(16,0),
     expiration_date varchar(5),
     security_code int(3),
-    primary key(payment_ID),
+    primary key(card_number),
     foreign key(customer_ID) references customer(customer_ID) on delete set null
 );
 
