@@ -43,12 +43,11 @@ create table product(
 
 
 create table payment(
-    payment_ID varchar(25),
     customer_ID int(11),
     card_number numeric(16,0),
     expiration_date varchar(5),
     security_code int(3),
-    primary key(payment_ID),
+    primary key(card_number),
     foreign key(customer_ID) references customer(customer_ID) on delete set null
 );
 
@@ -64,11 +63,11 @@ create table orders(
 
 create table transaction_history(
     transaction_ID varchar(25),
-    payment_ID varchar(25),
+    card_number numeric(16,0),
     product_ID varchar(25),
     customer_ID int(11),
     primary key(transaction_ID),
-    foreign key(payment_ID) references payment(payment_ID) on delete set null,
+    foreign key(card_number) references payment(card_number) on delete set null,
     foreign key(customer_ID) references customer(customer_ID) on delete set null,
     foreign key(product_ID) references product(product_ID) on delete set null
 );
