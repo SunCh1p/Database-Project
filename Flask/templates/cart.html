@@ -19,7 +19,6 @@
         </div>
         
 
-    <h1>Shopping Cart</h1>
     
     <div class="product-list">
         {% set counter = 0 %}
@@ -31,7 +30,12 @@
                 <p><strong>Description:</strong> {{ product[3] }}</p>
                 <p><strong>Price:</strong> {{ product[4] }}</p>
                 <p><strong>Quantity:</strong> {{ total_quantity[loop.index0] }}</p> {# Use loop.index0 as the index #}
-             
+                <form action="/cart " method="post">
+                    <input type="hidden" name="product_id" value="{{ product[0] }}">
+                    
+                    <button type="submit">remove</button>
+                    
+                </form>
             </div>
             {% set counter = counter + 1 %}
         {% endfor %}  

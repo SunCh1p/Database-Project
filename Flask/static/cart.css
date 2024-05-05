@@ -1,61 +1,136 @@
+/* Color Palette */
+:root {
+    --DarkBlue: #153448;
+    --LightBlue: #3C5B6F;
+    --BorderLightBlue: #536a79;
+    --Orange: orange; /* Adding an orange color variable */
+}
+
+/* Global styles */
+html {
+    background-color: var(--DarkBlue);
+}
 
 body {
     font-family: Arial, sans-serif;
+}
+
+.container {
+    padding-right: 0;
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navigation Bar Styling */
+/* Upper section */
+.Logo {
+    text-decoration: none;
+    color: white;
+}
+
+.NavBarHeader {
+    margin: 0px;
+    padding: 2% 5%;
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--DarkBlue);
+    color: white;
+}
+
+span {
+    color: var(--Orange);
+}
+
+.navAccount {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navAccount>li {
+    list-style-type: none;
+    margin-left: 10px;
+}
+
+.regisButton {
+    text-decoration: none;
+    color: white;
+}
+
+.regisButton:hover {
+    color: var(--Orange);
+    text-decoration: underline;
+}
+
+/* Lower section */
+.NavBar {
+    margin: 0px;
+    padding: 0px;
+    background-color: var(--LightBlue);
+    overflow: hidden;
+}
+
+.NavBar>* {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
     margin: 0;
     padding: 0;
+    border-top: 1px solid var(--BorderLightBlue);
 }
 
-header {
-    background-color: #333;
-    color: #fff;
-    padding: 20px;
+.NavBarButton {
+    text-decoration: none;
+    color: white;
+    padding: 14px 16px;
+    font-weight: 600;
     text-align: center;
+    background-color: var(--LightBlue);
+    border-left: 1px solid var(--BorderLightBlue);
+    border-right: 1px solid var(--BorderLightBlue);
+    transition: background-color 0.2s ease;
 }
 
-main {
-    padding: 20px;
+.NavBarButton:hover {
+    background-color: var(--BorderLightBlue);
 }
 
-.cart-items {
+/* Cart page specific styles */
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     margin-bottom: 20px;
 }
 
+.product {
+    background-color: #fff;
+    border: 1px solid var(--BorderLightBlue); /* Using the border color from the palette */
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 10px;
+    width: calc(33.33% - 20px);
+}
 
-.cart-item {
-    border: 1px solid #ddd;
-    padding: 10px;
+.product p {
     margin-bottom: 10px;
 }
 
-.cart-total {
-    text-align: right;
-    margin-bottom: 20px;
+.product p strong {
+    font-weight: bold;
 }
 
-.checkout-btn-container {
-    text-align: center;
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+    .product {
+        width: calc(50% - 20px);
+    }
 }
 
-#checkout-btn {
-    background-color: #333;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-#checkout-btn:hover {
-    background-color: #555;
-}
-
-footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+@media screen and (max-width: 480px) {
+    .product {
+        width: calc(100% - 20px);
+    }
 }

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <!-- Add any CSS stylesheets or links to CDN here -->
+</head>
+<body>
+    <h1>Checkout</h1>
+    <div>
+        <h2>Total Price: ${{ total_price }}</h2>
+        <hr>
+        <!-- Display items in the cart with their quantities -->
+        <h3>Items in Cart:</h3>
+        <ul>
+            {% for item in products %}
+                <li>{{ item[1] }} - Quantity: {{ item[6] }}</li> <!-- Assuming item[1] is the product name -->
+            {% endfor %}
+        </ul>
+        <hr>
+        <!-- Payment form -->
+        <form method="POST">
+            <label for="cardnum">Card Number:</label>
+            <input type="text" id="cardnum" name="cardnum" required><br><br>
+            <label for="Secode">Security Code:</label>
+            <input type="text" id="Secode" name="Secode" required><br><br>
+            <label for="expdate">Expiration Date:</label>
+            <input type="text" id="expdate" name="expdate" required><br><br>
+            <input type="submit" value="Pay">
+        </form>
+        <hr>
+        <a href="./catalog">Continue Shopping</a>
+    </div>
+</body>
+</html>
