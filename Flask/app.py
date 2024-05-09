@@ -172,13 +172,15 @@ def checkout():
         flash('Please log in to view your cart.', 'error')
         return redirect(url_for('login'))
 
+@app.route('/productSearchBar', methods=['GET'])
+def search():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM product")
+    data = cursor.fetchall()
+    cursor.close()
+    search_query = request
 
-
-#total amount need to pay
-#way to enter payment infromation
-#need to be able to pay 
-#store the order in order table
-#have a msg tell them the order has been completed 
+    return render_template('catalog.html', Products=data)
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -256,4 +258,4 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
-    app.run(host='localhost', port=5005)
+    app.run(host='localhost', port=5006)

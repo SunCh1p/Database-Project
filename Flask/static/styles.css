@@ -280,3 +280,58 @@ span{
     margin: 0 auto;
 }
 
+/*Catalog CSS*/
+.catalogHeader{
+    background-color: var(--LightBlue);
+    padding: 2%;
+    text-align: center;
+    color: white;
+    font-weight: 900;
+}
+
+.product-list{
+    padding: 5%;
+    display: flex;
+    flex-direction: column;
+}
+
+.productContainer{
+    padding: 2%;
+    border-bottom: 1px solid gray;
+    display: flex;
+    flex-direction: row;
+}
+
+.product{
+    width:80%;
+}
+
+.productDesc{
+    display: flex;
+    flex-direction: row;
+    color: darkgray;
+    justify-content: space-between;
+}
+
+.catalogButton{
+    color: white;
+    background-color:var(--LightBlue);
+    border: none;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.catalogButton:hover{
+    color: orange;
+    background-color: var(--BorderLightBlue);
+}
+
+.catalogButtonContainer{
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
