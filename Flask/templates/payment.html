@@ -1,53 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Information</title>
+    <style>
+        /* CSS styles from the second HTML file */
+        body {
+            font-family: Arial;
+            font-size: 17px;
+            padding: 8px;
+            color: #153448; /* Set text color */
+            background-color: #152238; /* Set dark blue background */
+        }
+
+        /* Set button color */
+        .btn {
+            background-color: #153448;
+            color: white;
+            transition: background-color 0.3s; /* Add transition for smooth color change */
+            text-decoration: none; /* Remove default underline */
+            padding: 8px 12px; /* Adjust padding for smaller buttons */
+            border-radius: 3px; /* Add border radius */
+            display: inline-block; /* Ensure the button behaves like a block element */
+        }
+
+        /* Light up button on hover */
+        .btn:hover {
+            background-color: #1e5372; /* Lighter shade of blue */
+        }
+
+        /* Light gray container around the entire content */
+        .page-container {
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #cccccc; /* Slightly lighter gray border */
+            border-radius: 5px;
+            margin: 20px auto; /* Center content */
+            max-width: 800px; /* Limit maximum width */
+        }
+
+        /* Other CSS styles... */
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Add your additional CSS styles here */
+        
+        /* Center footer */
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: white
+        }
+    </style>
 </head>
 <body>
-    <a href = "./" >Back</a>
-    <h2>Payment Information</h2>
+    <div class="page-container">
+        <a href="./" class="btn" style="color: #FFA500;">Back</a>
+        <h2>Payment Information</h2>
 
-    <!-- Display existing payments -->
-    <h3>Existing Payment Methods:</h3>
-    {% if existing_payments %}
-        <ul>
-            {% for payment in existing_payments %}
-                {% set last_four = (payment[0] | string)[-4:] %} <!-- Extract last four digits -->
-                <li>Card ending in **** **** **** {{ last_four }}</li> <!-- Display only last four digits -->
-                <form action="/payment" method="post">
-                    <input type="hidden" name="remove_payment" value="{{ payment[0] }}"> <!-- Use full card number for processing -->
-                    
-                    <button type="submit">Remove</button>
-                </form>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No existing payment methods found.</p>
-    {% endif %}
+        <!-- Display existing payments -->
+        <h3>Existing Payment Methods:</h3>
+        {% if existing_payments %}
+            <ul>
+                {% for payment in existing_payments %}
+                    {% set last_four = (payment[0] | string)[-4:] %}
+                    <li>Card ending in **** **** **** {{ last_four }}</li>
+                    <form action="/payment" method="post">
+                        <input type="hidden" name="remove_payment" value="{{ payment[0] }}">
+                        <button type="submit" class="btn" style="font-size: 14px;">Remove</button> <!-- Smaller remove button -->
+                    </form>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No existing payment methods found.</p>
+        {% endif %}
 
-    <!-- Add New Form of Payment -->
-    <h3>Add New Form of Payment:</h3>
-    <button id="showPaymentForm" class="btn btn-primary">Add New Payment Method</button>
+        <!-- Add New Form of Payment -->
+        <h3>Add New Form of Payment:</h3>
+        <button id="showPaymentForm" class="btn btn-primary">Add New Payment Method</button>
 
-    <!-- Form for adding new payment method (initially hidden) -->
-    <div id="paymentForm" style="display: none;">
-        <form action="/payment" method="post" onsubmit="return validatePaymentForm()">
-            <!-- Your payment form fields here -->
-            <label for="cardNum">Credit Card Number:</label><br>
-            <input type="text" id="cardNum" name="cardNum" required pattern="\d{16}" title="Credit card number must be 16 digits"><br><br>
-            <label for="date">Expiration Date (MM/YY):</label><br>
-            <input type="text" id="date" name="date" required pattern="^(0[1-9]|1[0-2])\/?([0-9]{2})$" title="Expiration date must be in MM/YY format"><br><br>
-            <label for="cvc">CVC:</label><br>
-            <input type="text" id="cvc" name="cvc" required pattern="\d{3}" title="CVC must be 3 digits"><br><br>
-            <label for="zip">Zip Code:</label><br>
-            <input type="text" id="zip" name="zip" required pattern="\d{5}" title="Zip code must be 5 digits"><br><br>
-            <input type="submit" value="Submit">
-        </form> 
+        <!-- Form for adding new payment method (initially hidden) -->
+        <div id="paymentForm" style="display: none;">
+            <form action="/payment" method="post" onsubmit="return validatePaymentForm()">
+                <!-- Your payment form fields here -->
+                <label for="cardNum">Credit Card Number:</label><br>
+                <input type="text" id="cardNum" name="cardNum" required pattern="\d{16}" title="Credit card number must be 16 digits"><br><br>
+                <label for="date">Expiration Date (MM/YY):</label><br>
+                <input type="text" id="date" name="date" required pattern="^(0[1-9]|1[0-2])\/?([0-9]{2})$" title="Expiration date must be in MM/YY format"><br><br>
+                <label for="cvc">CVC:</label><br>
+                <input type="text" id="cvc" name="cvc" required pattern="\d{3}" title="CVC must be 3 digits"><br><br>
+                <label for="zip">Zip Code:</label><br>
+                <input type="text" id="zip" name="zip" required pattern="\d{5}" title="Zip code must be 5 digits"><br><br>
+                <input type="submit" value="Submit" class="btn btn-primary">
+            </form> 
+        </div>
     </div>
 
-    
+    <footer>
+        <p>&copy; 2024 GetItRight</p>
+    </footer>
+
     <script>
         document.getElementById("showPaymentForm").addEventListener("click", function() {
             document.getElementById("paymentForm").style.display = "block";
