@@ -253,25 +253,31 @@ def checkout():
         #cursor.mysql.connection.cursor()
         count = 0
         for product in products:
-            product_name = product[0]
+            productID = product[0]
             quantity = quantitys[count]
 
             #increment orders_ID
             cursor = mysql.connection.cursor()
             cursor.execute("SELECT MAX(orders_ID) from orders")
-            maxpayment = cursor.fetchone()
+            orderID = cursor.fetchone()
             cursor.close()
-            maxpayment = maxpayment[0]
-            maxpayment += 1
+            if orderID[0] != None:
+                orderID = int(orderID[0])+1
+            else:
+                orderID = 1
             
             #insert order into orders table
             cursor = mysql.connection.cursor()
-            cursor.execute("SELECT MAX(orders_ID) from orders")
-            maxpayment = cursor.fetchone()
+            cursor.execute("INSERT INTO orders (orders_ID, customer_ID, product_ID, card_number, quantity) VALUES (%s,%s,%s,%s,%s)",(orderID,customer_id,productID,card,quantity))
+            mysql.connection.commit()
             cursor.close()
-
             count+=1
-
+        #empty cart
+        cursor = mysql.connection.cursor()
+        cursor.execute("DELETE FROM cart WHERE customer_ID = %s",(customer_id,))
+        mysql.connection.commit()
+        cursor.close()
+        return render_template('checkout.html',total_price=0, cards=existing_payments,submission="Order Processed!")
     return render_template('checkout.html',total_price=sum, cards=existing_payments, Products=products, quantity=quantitys)
 
 
@@ -341,6 +347,17 @@ def payment():
 
     return render_template('/payment.html', existing_payments=existing_payments)
 
+@app.route('/orders')
+def orders():
+    if('loggedin') not in session:
+        return redirect(url_for('login'))
+
+    customer_ID = session['id']
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM orders WHERE customer_ID = %s", (customer_ID,))
+    data = cursor.fetchall()
+    cursor.close()
+    return render_template('./orders.html', Orders=data)
 
 @app.route('/register', methods=['GET','POST'])
 def register():

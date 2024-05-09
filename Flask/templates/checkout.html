@@ -44,7 +44,9 @@
                     <p>Need to add payment?<a href="./payment"> Click Here</a><br></p>
                     <div id="customAlert" style="display: none; position: absolute; background-color: #3C5B6F; color: white; padding: 10px; border-radius: 10px;"></div>
                 </form>
-                
+            {%endif%}
+            {%if submission%}
+                <p>Order Processed!</p>
             {%endif%}
         </div>
 
