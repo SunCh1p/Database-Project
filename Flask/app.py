@@ -11,9 +11,9 @@ app.secret_key = 'your secret key'
 
 #Configure MySQL
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'cblaha1'
-app.config['MYSQL_PASSWORD'] = 'Uq2pg8gG'
-app.config['MYSQL_DB'] = 'cblaha1'
+app.config['MYSQL_USER'] = 'jgillis8'
+app.config['MYSQL_PASSWORD'] = '3mkwN8wO'
+app.config['MYSQL_DB'] = 'jgillis8'
 
 #Initialize MySQL
 mysql = MySQL(app)
@@ -77,41 +77,86 @@ def Profile():
     if('loggedin') in session:
         current_customerID = session['id']
         if request.method == 'POST':
-            if 'first_name' in request.form:
+            
+            cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            #if 'first_name' in request.form:
                 #sql query insert FirstName into customer
                 #change first name
-                pass
+            #if 'last_name' in request.form:
+            if 'first_name' in request.form:
+                first_name = request.form['first_name']
+                cursor.execute("""INSERT INTO customer(customer_ID, FirstName)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                FirstName=VALUES(FirstName)""",
+                                (current_customerID, first_name))
             if 'last_name' in request.form:
-                pass
-            
-            first_name = request.form['first_name']
-            last_name = request.form['last_name']
-            street = request.form['street']
-            street_num = request.form['street_num']
-            apt_num = request.form['apt_num']
-            city = request.form['city']
-            zip_code = request.form['zip_code']
-            email=request.form['email']
-            cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                last_name = request.form['last_name']
+                cursor.execute("""INSERT INTO customer(customer_ID, LastName)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                LastName=VALUES(LastName)""",
+                                (current_customerID, last_name))
+            if 'email' in request.form:
+                email = request.form['email']
+                cursor.execute("""INSERT INTO customer(customer_ID, email)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                email=VALUES(email)""",
+                                (current_customerID, email))
+            if 'street_num' in request.form:
+                street_num = request.form['street_num']
+                cursor.execute("""INSERT INTO customer(customer_ID, street_number)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                street_number=VALUES(street_number)""",
+                                (current_customerID, street_num))
+            if 'city' in request.form:
+                city = request.form['city']
+                cursor.execute("""INSERT INTO customer(customer_ID, city)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                city=VALUES(city)""",
+                                (current_customerID, city))
+            if 'street' in request.form:
+                street = request.form['street']
+                cursor.execute("""INSERT INTO customer(customer_ID, street_name)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                street_name=VALUES(street_name)""",
+                                (current_customerID, street))
+            if 'first_name' in request.form:
+                first_name = request.form['first_name']
+                cursor.execute("""INSERT INTO customer(customer_ID, FirstName)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                FirstName=VALUES(FirstName)""",
+                                (current_customerID, first_name))
+            if 'apt_num' in request.form:
+                apt_num = request.form['apt_num']
+                cursor.execute("""INSERT INTO customer(customer_ID, apt_num)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                apt_num=VALUES(apt_num)""",
+                                (current_customerID, apt_num))
+            if 'zip_code' in request.form:
+                zip_code = request.form['zip_code']
+                cursor.execute("""INSERT INTO customer(customer_ID, zip_code)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                zip_code=VALUES(zip_code)""",
+                                (current_customerID, zip_code))
             #cursor.execute('INSERT INTO customer VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)', (current_username, first_name, last_name, email, street_num, street,
             #apt_num, city, zip_code, ))
-            cursor.execute("""INSERT INTO customer (customer_ID, FirstName, LastName, email, street_number, street_name, apt_num, city, zip_code)
-                              VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                              ON DUPLICATE KEY UPDATE
-                              FirstName = VALUES(FirstName),
-                              LastName = VALUES(LastName),
-                              email = VALUES(email),
-                              street_number = VALUES(street_number),
-                              street_name = VALUES(street_name),
-                              apt_num = VALUES(apt_num),
-                              city = VALUES(city),
-                              zip_code = VALUES(zip_code)""",
-                           (current_customerID, first_name, last_name, email, street_num, street, apt_num, city, zip_code))
             mysql.connection.commit()
             msg = 'You have successfully changed your profile information'
             cursor.close()
 
-        return render_template('profilein.html')
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT * FROM customer WHERE customer_ID = %s", (current_customerID,))
+        user_data = cursor.fetchone()  # Assuming there's only one row per customer ID
+        cursor.close()
+        return render_template('profilein.html', user_data=user_data)
     else:
         return redirect(url_for('login'))
 
