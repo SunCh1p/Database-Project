@@ -1,38 +1,87 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Page</title>
-</head> 
-<body>
-<!--Display User Data -> give them a means to change their data-->
-<h2>Register</h2>
+    <!DOCTYPE html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>User Profile</title>
+    </head> 
+    <body>
 
-<form action="/Profile" method="post">
-    <label for="first_name">First Name:</label><br>
-    <input type="text" id="first_name" name="first_name" required><br>
-    <label for="last_name">Last Name:</label><br>
-    <input type = "text" id="last_name" name="last_name" required><br>
-    <label for="email">Email Address:</label><br>
-    <input type="email" id="email" name="email" required><br>
-    <label for="street">Street Name:</label><br>
-    <input type="text" id="street" name="street" required><br>
-    <label for="street_num">Street Number:</label><br>
-    <input type="number" id="street_num" name="street_num" required><br>
-    <label for="apt_num">Apt Num (0 for NA):</label><br>
-    <input type="number" id="apt_num" name="apt_num" required><br>
-    <label for="city">City:</label><br>
-    <input type="text" id="city" name="city" required><br>
-    <label for="zip_code">Zip Code:</label><br>
-    <input type="number" id="zip_code" name="zip_code" required><br>
+        <h2>Update Profile</h2>
+
+        <form action="/Profile" method="post">
+            <label for="first_name">First Name: {{ user_data[1] }}</label><br>
+            <input type="text" id="first_name" name="first_name" required><br>
+            {%if error%}
+            <p>{{error}}</p>
+            {%endif%}
+            <input type="submit" value="Save Changes">
+        </form>
     
-    {%if error%}
-    <p>{{error}}</p>
-    {%endif%}
-    <input type="submit" value="Save Changes">
-</form>
+        <form action="/Profile" method="post">
+            <label for="last_name">Last Name: {{ user_data[2] }}</label><br>
+            <input type="text" id="last_name" name="last_name" required><br>
+            {%if error%}
+            <p>{{error}}</p>
+            {%endif%}
+            <input type="submit" value="Save Changes">
+        </form>
+    
+        <form action="/Profile" method="post">
+            <label for="email">Email Address: {{ user_data[3] }}</label><br>
+            <input type="email" id="email" name="email" required><br>
+            {%if error%}
+            <p>{{error}}</p>
+            {%endif%}
+            <input type="submit" value="Save Changes">
+        </form>
+    
+        <form action="/Profile" method="post">
+            <label for="street">Street Name: {{ user_data[5] }}</label><br>
+            <input type="text" id="street" name="street" required><br>
+            {%if error%}
+            <p>{{error}}</p>
+            {%endif%}
+            <input type="submit" value="Save Changes">
+        </form>
+    
+        <form action="/Profile" method="post">
+            <label for="street_num">Street Number: {{ user_data[4] }}</label><br>
+            <input type="number" id="street_num" name="street_num" required><br>
+            {%if error%}
+            <p>{{error}}</p>
+            {%endif%}
+            <input type="submit" value="Save Changes">
+        </form>
+    
+        <form action="/Profile" method="post">
+            <label for="apt_num">Apt Num: {{ user_data[6] }}</label><br>
+            <input type="number" id="apt_num" name="apt_num" required><br>
+            {%if error%}
+            <p>{{error}}</p>
+            {%endif%}
+            <input type="submit" value="Save Changes">
+        </form>
+    
+        <form action="/Profile" method="post">
+            <label for="city">City: {{ user_data[7] }}</label><br>
+            <input type="text" id="city" name="city" required><br>
+            {%if error%}
+            <p>{{error}}</p>
+            {%endif%}
+            <input type="submit" value="Save Changes">
+        </form>
+    
+        <form action="/Profile" method="post">
+            <label for="zip_code">Zip Code: {{ user_data[8] }}</label><br>
+            <input type="number" id="zip_code" name="zip_code" required><br>
+            {%if error%}
+            <p>{{error}}</p>
+            {%endif%}
+            <input type="submit" value="Save Changes">
+        </form>
+
+    
 
 </body>
 </html>
