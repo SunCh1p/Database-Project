@@ -1,46 +1,10 @@
 INSERT INTO product (product_ID, product_name, company_name, descr, price, quantity)
 VALUES 
-('P001', 'Laptop', 'XYZ Electronics', '15-inch laptop with SSD storage', 899.99, 50),
-('P002', 'Smartphone', 'ABC Mobiles', '5G smartphone with dual-camera setup', 699.99, 100),
-('P003', 'Headphones', 'AudioTech', 'Noise-canceling wireless headphones', 149.99, 75),
-('P004', 'Smartwatch', 'TechWear', 'Fitness tracker with heart rate monitor', 199.99, 50);
-
--- Inserting data into the customer table
-INSERT INTO customer (customer_ID, FirstName, LastName, email, street_number, street_name, apt_num, city, zip_code)
-VALUES 
-('C001', 'John', 'Doe', 'john.doe@example.com', 123, 'Main Street', 101, 'Cityville', 12345),
-('C002', 'Jane', 'Smith', 'jane.smith@example.com', 456, 'Oak Avenue',  202, 'Townsville', 54321),
-('C003', 'Michael', 'Johnson', 'michael.johnson@example.com', 789, 'Elm Street', 352, 'Villageton', 98765);
-
--- Inserting data into the payment table
-INSERT INTO payment (payment_ID, customer_ID, card_number, expiration_date, security_code)
-VALUES 
-('PAY001', 'C001', 1234567890123456, '12/26', 123),
-('PAY002', 'C002', 9876543210987654, '08/25', 456),
-('PAY003', 'C003', 5678901234567890, '03/24', 789);
-
--- Inserting data into the order table
-INSERT INTO orders (orders_ID, customer_ID, product_ID, quantity)
-VALUES 
-('ORD001', 'C001', 'P001', 2),
-('ORD002', 'C002', 'P002', 1),
-('ORD003', 'C003', 'P003', 3),
-('ORD004', 'C001', 'P004', 1),
-('ORD005', 'C002', 'P001', 1);
-
--- Inserting data into the transaction_history table
-INSERT INTO transaction_history (Payment_ID, product_ID, transaction_ID)
-VALUES 
-('PAY001', 'P001', 'TRX001'),
-('PAY002', 'P002', 'TRX002'),
-('PAY003', 'P003', 'TRX003'),
-('PAY001', 'P004', 'TRX004'),
-('PAY002', 'P001', 'TRX005');
-
--- Inserting data into the Compatibility table
-INSERT INTO Compatibility (product_ID, product2_ID)
-VALUES 
-('P001', 'P003'),
-('P002', 'P004'),
-('P003', 'P001'),
-('P004', 'P002');
+    ('RAM123', '8GB DDR4 RAM', 'Corsair', '8GB DDR4 RAM module', 49.99, 100),
+    ('RAM456', '16GB DDR4 RAM', 'Kingston', '16GB DDR4 RAM module', 89.99, 75),
+    ('GPU789', 'NVIDIA GeForce RTX 3080', 'NVIDIA', 'High-end gaming graphics card', 699.99, 50),
+    ('GPUABC', 'AMD Radeon RX 6800 XT', 'AMD', 'High-performance graphics card', 649.99, 60),
+    ('CPUXYZ', 'Intel Core i9-10900K', 'Intel', '10th Gen Core i9 processor', 499.99, 40),
+    ('CPUMNO', 'AMD Ryzen 9 5900X', 'AMD', '12-core desktop processor', 549.99, 35),
+    ('MOTHERBOARD123', 'ASUS ROG Strix Z590-E Gaming', 'ASUS', 'ATX gaming motherboard', 299.99, 25),
+    ('MOTHERBOARD456', 'MSI MPG B550 Gaming Edge WiFi', 'MSI', 'ATX motherboard with WiFi', 179.99, 30);

@@ -11,9 +11,9 @@ app.secret_key = 'your secret key'
 
 #Configure MySQL
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'xjeffy'
-app.config['MYSQL_PASSWORD'] = '6bx8JcwD'
-app.config['MYSQL_DB'] = 'xjeffy'
+app.config['MYSQL_USER'] = 'cblaha1'
+app.config['MYSQL_PASSWORD'] = 'Uq2pg8gG'
+app.config['MYSQL_DB'] = 'cblaha1'
 
 #Initialize MySQL
 mysql = MySQL(app)
@@ -30,7 +30,9 @@ def index():
     
 @app.route('/catalog', methods=['GET', 'POST'])
 def catalog():
-    if request.method == 'POST':
+    if 'loggedin' not in session:
+        return redirect('./login')
+    if request.method == 'POST' and 'product_id' in request.form:
         # Get the product ID from the form data
         product_id = request.form.get('product_id')
         if product_id:
@@ -38,7 +40,6 @@ def catalog():
             if 'loggedin' in session:
                 # Get the customer ID from the session
                 customer_id = session['id']
-                print("Customer ID:", customer_id)  # Add this print statement to check the customer ID
 
                 # Insert the item into the cart table
                 cursor = mysql.connection.cursor()
@@ -48,6 +49,21 @@ def catalog():
                 flash('Product added to cart.', 'success')
             else:
                 flash('Please log in to add products to the cart.', 'error')
+        search_query = request.form.get('search')
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT * FROM product WHERE product_name LIKE %s", ('%' + search_query + '%',))
+        search_query = cursor.fetchall()
+        cursor.close()
+        return render_template('catalog.html', Products=search_query)
+    elif request.method == 'POST' and 'search' in request.form:
+        search = request.form['search']
+        if search:
+            cursor = mysql.connection.cursor()
+            cursor.execute("SELECT * FROM product WHERE product_name LIKE %s", ('%' + search + '%',))
+            search_query = cursor.fetchall()
+            cursor.close()
+            return render_template('catalog.html', Products=search_query)
+
 
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM product")
@@ -55,20 +71,108 @@ def catalog():
     cursor.close()
     return render_template('catalog.html', Products=data)
 
+@app.route('/Profile', methods=['GET', 'POST'])
+def Profile():
+    msg=''
+    if('loggedin') in session:
+        current_customerID = session['id']
+        if request.method == 'POST':
+            
+            cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            #if 'first_name' in request.form:
+                #sql query insert FirstName into customer
+                #change first name
+            #if 'last_name' in request.form:
+            if 'first_name' in request.form:
+                first_name = request.form['first_name']
+                cursor.execute("""INSERT INTO customer(customer_ID, FirstName)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                FirstName=VALUES(FirstName)""",
+                                (current_customerID, first_name))
+            if 'last_name' in request.form:
+                last_name = request.form['last_name']
+                cursor.execute("""INSERT INTO customer(customer_ID, LastName)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                LastName=VALUES(LastName)""",
+                                (current_customerID, last_name))
+            if 'email' in request.form:
+                email = request.form['email']
+                cursor.execute("""INSERT INTO customer(customer_ID, email)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                email=VALUES(email)""",
+                                (current_customerID, email))
+            if 'street_num' in request.form:
+                street_num = request.form['street_num']
+                cursor.execute("""INSERT INTO customer(customer_ID, street_number)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                street_number=VALUES(street_number)""",
+                                (current_customerID, street_num))
+            if 'city' in request.form:
+                city = request.form['city']
+                cursor.execute("""INSERT INTO customer(customer_ID, city)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                city=VALUES(city)""",
+                                (current_customerID, city))
+            if 'street' in request.form:
+                street = request.form['street']
+                cursor.execute("""INSERT INTO customer(customer_ID, street_name)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                street_name=VALUES(street_name)""",
+                                (current_customerID, street))
+            if 'first_name' in request.form:
+                first_name = request.form['first_name']
+                cursor.execute("""INSERT INTO customer(customer_ID, FirstName)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                FirstName=VALUES(FirstName)""",
+                                (current_customerID, first_name))
+            if 'apt_num' in request.form:
+                apt_num = request.form['apt_num']
+                cursor.execute("""INSERT INTO customer(customer_ID, apt_num)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                apt_num=VALUES(apt_num)""",
+                                (current_customerID, apt_num))
+            if 'zip_code' in request.form:
+                zip_code = request.form['zip_code']
+                cursor.execute("""INSERT INTO customer(customer_ID, zip_code)
+                                VALUES (%s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                zip_code=VALUES(zip_code)""",
+                                (current_customerID, zip_code))
+            #cursor.execute('INSERT INTO customer VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)', (current_username, first_name, last_name, email, street_num, street,
+            #apt_num, city, zip_code, ))
+            mysql.connection.commit()
+            msg = 'You have successfully changed your profile information'
+            cursor.close()
+
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT * FROM customer WHERE customer_ID = %s", (current_customerID,))
+        user_data = cursor.fetchone()  # Assuming there's only one row per customer ID
+        cursor.close()
+        return render_template('profilein.html', user_data=user_data)
+    else:
+        return redirect(url_for('login'))
+
 
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
+    if 'loggedin' not in session:
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         # Handle POST request to remove a product from the cart
         if 'loggedin' in session:
-            print("hello")
             remove = request.form['product_id']
             if remove:
-                print("hi")
                 # Retrieve the customer ID from the session
                 customer_id = session['id']
-                print("Customer ID:", customer_id)  # Add this print statement to check the customer ID
-                print(remove)
                 # Delete the item from the cart table
                 mysql.connection.cursor()
                 cursor = mysql.connection.cursor()
@@ -107,81 +211,81 @@ def cart():
         flash('Please log in to view your cart.', 'error')
         return redirect(url_for('login'))
 
-#counter =0
-#for loop we already have 
-    #in products after we print all the staf 
-    #print quantitys at index counter 
-    #counter++
-
 
 @app.route('/checkout', methods=['GET' , 'POST'])
 def checkout():
-    if request.method == 'POST' and 'cardnum' in request.form and 'Secode' in request.form and 'expdate' in request.form and 'loggedin' in session:
-        cardnum = request.form['cardnum']
-        Secode = request.form['Secode']
-        expdate = request.form['expdate']
-        #cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        if not re.match(r'^\d{2}/\d{2}$', expdate):
-            msg = 'Invalid expdate address!'
-            print("hello1")
-        elif not re.match(r'^\d{16}$', cardnum):
-            msg = 'cardnum must contain only numbers!'
-            print("hello2")
-        elif not re.match(r'^\d{3}$', Secode):
-            msg=" Invalid CVC code"
-            print("hello3")
-        elif not cardnum or not Secode or not expdate:
-            msg = 'Please fill out the form!'
-            print("hello4")
-        else:
-            try:
-                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-                cursor.execute('INSERT INTO payment (customer_ID,card_number, security_code, expiration_date) VALUES (%s, %s, %s, %s)', (session['id'],cardnum, Secode, expdate,))
-                mysql.connection.commit()
-                cursor.close()
-                msg = 'Payment successful!'
-                print("Payment successful")
-            except Exception as e:
-                msg = 'Error: %s' % str(e)
-                print("Error:", e)
-        cursor.close()
-        
-
-
-    if 'loggedin' in session:
-        # Retrieve the customer ID from the session
-        customer_id = session['id']
-        cursor = mysql.connection.cursor()
-        cursor.execute("SELECT p.*, c.quantity FROM product p INNER JOIN cart c ON p.product_ID = c.product_ID WHERE c.customer_ID = %s", (customer_id,))
-        products = cursor.fetchall()
-         
-        sum = 0
-        quantitys=[]
-        for item in products:
-             product_id = item[0]  
-             price = item[4]
-             cursor.execute('SELECT quantity FROM cart WHERE product_ID = %s AND customer_ID = %s', (product_id, session['id']))
-             quantity= cursor.fetchone()
-             if quantity:
-                sum+=quantity[0]*price
-                quantitys.append(quantity[0])
-
-        
-        return render_template('checkout.html',total_price=sum)
-    else:
-        flash('Please log in to view your cart.', 'error')
+    if 'loggedin' not in session:
         return redirect(url_for('login'))
 
+    order = False
+    if request.method == 'POST' and 'card' in request.form:
+        order = True
+        card = request.form['card']
+
+    # Retrieve the customer ID from the session
+    customer_id = session['id']
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT p.*, c.quantity FROM product p INNER JOIN cart c ON p.product_ID = c.product_ID WHERE c.customer_ID = %s", (customer_id,))
+    products = cursor.fetchall()
+        
+    sum = 0
+    quantitys=[]
+    for item in products:
+        product_id = item[0]  
+        price = item[4]
+        cursor.execute('SELECT quantity FROM cart WHERE product_ID = %s AND customer_ID = %s', (product_id, session['id']))
+        quantity= cursor.fetchone()
+        if quantity:
+            sum+=quantity[0]*price
+            quantitys.append(quantity[0])
+
+    #Retrieve Payment Information for selected customer
+    customer_id = session.get('id')
+
+    #SQL query for retrieving payment information
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT card_number FROM payment WHERE customer_ID = %s", (customer_id,))
+    existing_payments = cursor.fetchall()
+    cursor.close()
+
+    #store store order in database and everything in cart
+    if order == True:
+        #cursor.mysql.connection.cursor()
+        count = 0
+        for product in products:
+            productID = product[0]
+            quantity = quantitys[count]
+
+            #increment orders_ID
+            cursor = mysql.connection.cursor()
+            cursor.execute("SELECT MAX(orders_ID) from orders")
+            orderID = cursor.fetchone()
+            cursor.close()
+            if orderID[0] != None:
+                orderID = int(orderID[0])+1
+            else:
+                orderID = 1
+            
+            #insert order into orders table
+            cursor = mysql.connection.cursor()
+            cursor.execute("INSERT INTO orders (orders_ID, customer_ID, product_ID, card_number, quantity) VALUES (%s,%s,%s,%s,%s)",(orderID,customer_id,productID,card,quantity))
+            mysql.connection.commit()
+            cursor.close()
+            count+=1
+        #empty cart
+        cursor = mysql.connection.cursor()
+        cursor.execute("DELETE FROM cart WHERE customer_ID = %s",(customer_id,))
+        mysql.connection.commit()
+        cursor.close()
+        return render_template('checkout.html',total_price=0, cards=existing_payments,submission="Order Processed!")
+    return render_template('checkout.html',total_price=sum, cards=existing_payments, Products=products, quantity=quantitys)
 
 
-#total amount need to pay
-#way to enter payment infromation
-#need to be able to pay 
-#store the order in order table
-#have a msg tell them the order has been completed 
 
 @app.route('/login', methods=['GET','POST'])
 def login():
+    if 'loggedin' in session:
+        return redirect(url_for('index'))
     msg = ''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
@@ -233,7 +337,6 @@ def payment():
 
     elif request.method == 'POST' and 'remove_payment' in request.form:
         cardNum = request.form['remove_payment']
-        print(cardNum)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         sql = "DELETE FROM payment WHERE customer_ID = %s AND card_number = %s"
         values = (customer_id, cardNum)
@@ -244,6 +347,17 @@ def payment():
 
     return render_template('/payment.html', existing_payments=existing_payments)
 
+@app.route('/orders')
+def orders():
+    if('loggedin') not in session:
+        return redirect(url_for('login'))
+
+    customer_ID = session['id']
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM orders WHERE customer_ID = %s", (customer_ID,))
+    data = cursor.fetchall()
+    cursor.close()
+    return render_template('./orders.html', Orders=data)
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -271,7 +385,7 @@ def register():
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
             cursor.execute('INSERT INTO accounts VALUES (NULL, %s, %s, %s)', (username, hashed_password, email,))
             mysql.connection.commit()
-            msg = 'You have successfully registered!'
+            msg = 'You have successfully registered! Please sign in!'
         cursor.close()
     elif request.method == 'POST':
         msg = 'Please fill out registration form!'
@@ -281,7 +395,7 @@ def register():
 def logout():
     session.pop('username', None)
     session.pop('id', None)
-    session.pop('logged_in', None)
+    session.pop('loggedin', None)
     return redirect(url_for('index'))
 
 if __name__ == "__main__":

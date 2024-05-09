@@ -51,16 +51,17 @@ create table payment(
 );
 
 create table orders(
-    orders_ID varchar(25),
+    orders_ID int(11),
     customer_ID int(11),
     product_ID varchar(25),
     card_number numeric(16,0),
     quantity int(11),
     primary key(orders_ID),
-    foreign key(payment_ID) references payment(payment_ID) on delete set null,
+    foreign key(card_number) references payment(card_number) on delete set null,
     foreign key(product_ID) references product(product_ID) on delete set null,
-    foreign key(customer_ID) references payment(customer_ID) on delete set null
+    foreign key(customer_ID) references customer(customer_ID) on delete set null
 );
+
 
 CREATE TABLE Compatibility (
     product_ID varchar(25),

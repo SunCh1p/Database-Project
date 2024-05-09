@@ -28,33 +28,27 @@
     <main>
         <div class="product-list">
             <div class="productHeader">
-                <h3>Products: {{Products|length}}</h3>
+                <h3>Number of Orders: {{Orders|length}}</h3>
                 <div>
-                    <form action="/catalog" method="post" class = "loginrow">
-                        <div class="loginicon">
-                            <i class="fa fa-search" aria-hidden="true"></i>
-                        </div>
-                        <input type="text" name="search" value="{{ request.form.get('search', '') }}" placeholder="Search for Product">
-                    </form>
                 </div>
             </div>
-            {% for product in Products %}
-                <div class = "productContainer">
-                    <div class="product">
-                        <h3>{{ product[1] }}</h3>
-                        <div class="productDesc">
-                            <p><strong>Company Name:</strong> {{ product[2] }}</p>
-                            <p><strong>Description:</strong> {{ product[3] }}</p>
-                            <p><strong>Price:</strong> {{ product[4] }}</p>
-                        </div>
-                    </div>
-                    <form class="catalogButtonContainer" action="/catalog" method="post">
-                        <input type="hidden" name="search" value="{{ request.form.get('search', '') }}">
-                        <input type="hidden" name="product_id" value="{{ product[0] }}">
-                        <button class = "catalogButton" type="submit">Add</button>
-                    </form>
+            <div class="cart-list">
+                <div class = "cartproduct">
+                    <p><strong>Order ID</strong></p>
+                    <p><strong>Product_ID</strong></p>
+                    <p><strong>Card Number</strong></p>
+                    <p><strong>Quantity</strong></p>
+    
                 </div>
-            {% endfor %}
+                {% for order in Orders %}
+                    <div class="cartproduct">
+                        <p>{{ order[0] }}</p>
+                        <p>{{ order[2] }}</p>
+                        <p>{{ order[3]}}</p>
+                        <p>{{ order[4] }}</p>
+                    </div>
+                {% endfor %}  
+            </div>
         </div>
     </main>
 
