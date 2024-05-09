@@ -281,6 +281,15 @@ span{
 }
 
 /*Catalog CSS*/
+.productHeader{
+    padding-right: 5%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-weight: 900;
+    border-bottom: 3px solid gray;
+}
+
 .catalogHeader{
     background-color: var(--LightBlue);
     padding: 2%;

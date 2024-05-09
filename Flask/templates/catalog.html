@@ -15,16 +15,7 @@
             <h1 class="NavBarHeaderCenter"><a href = "./" class="Logo"><i class="fa fa-wrench" aria-hidden="true"></i>Get<span>It</span>Right</a></h1>
         </div>
     </div>
-    <div class = "NavBar">
-        <ul>
-            <a href = "./catalog" class="NavBarButton">Catalog</a>
-            <a href = "./cart" class="NavBarButton">Cart</a>
-            <a href = "./checkout" class="NavBarButton">Check Out</a></li>
-            <a href = "./" class="NavBarButton">Contact</a>
-            <i class="fa fa-search NavBarButton" aria-hidden="true"></i>
-        </ul>
-    </div>
-    
+
     <div class = catalogHeader>
         <h2>Choose a product</h2>
     </div>
@@ -32,6 +23,17 @@
     </div>
     <main>
         <div class="product-list">
+            <div class="productHeader">
+                <h3>Products: {{Products|length}}</h3>
+                <div>
+                    <form action="/catalog" method="post" class = "loginrow">
+                        <div class="loginicon">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </div>
+                        <input type="text" name="search" value="{{ request.form.get('search', '') }}" placeholder="Search for Product">
+                    </form>
+                </div>
+            </div>
             {% for product in Products %}
                 <div class = "productContainer">
                     <div class="product">
@@ -43,8 +45,9 @@
                         </div>
                     </div>
                     <form class="catalogButtonContainer" action="/catalog" method="post">
+                        <input type="hidden" name="search" value="{{ request.form.get('search', '') }}">
                         <input type="hidden" name="product_id" value="{{ product[0] }}">
-                        <button class = "catalogButton" type="submit">Add to Cart</button>
+                        <button class = "catalogButton" type="submit">Add</button>
                     </form>
                 </div>
             {% endfor %}

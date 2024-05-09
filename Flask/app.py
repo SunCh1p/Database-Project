@@ -30,7 +30,9 @@ def index():
     
 @app.route('/catalog', methods=['GET', 'POST'])
 def catalog():
-    if request.method == 'POST':
+    if 'loggedin' not in session:
+        return redirect(url_for('login'))
+    if request.method == 'POST' and 'product_id' in request.form:
         # Get the product ID from the form data
         product_id = request.form.get('product_id')
         if product_id:
@@ -38,7 +40,6 @@ def catalog():
             if 'loggedin' in session:
                 # Get the customer ID from the session
                 customer_id = session['id']
-                print("Customer ID:", customer_id)  # Add this print statement to check the customer ID
 
                 # Insert the item into the cart table
                 cursor = mysql.connection.cursor()
@@ -48,6 +49,21 @@ def catalog():
                 flash('Product added to cart.', 'success')
             else:
                 flash('Please log in to add products to the cart.', 'error')
+        search_query = request.form.get('search')
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT * FROM product WHERE product_name LIKE %s", ('%' + search_query + '%',))
+        search_query = cursor.fetchall()
+        cursor.close()
+        return render_template('catalog.html', Products=search_query)
+    elif request.method == 'POST' and 'search' in request.form:
+        search = request.form['search']
+        if search:
+            cursor = mysql.connection.cursor()
+            cursor.execute("SELECT * FROM product WHERE product_name LIKE %s", ('%' + search + '%',))
+            search_query = cursor.fetchall()
+            cursor.close()
+            return render_template('catalog.html', Products=search_query)
+
 
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM product")
@@ -106,12 +122,6 @@ def cart():
     else:
         flash('Please log in to view your cart.', 'error')
         return redirect(url_for('login'))
-
-#counter =0
-#for loop we already have 
-    #in products after we print all the staf 
-    #print quantitys at index counter 
-    #counter++
 
 
 @app.route('/checkout', methods=['GET' , 'POST'])
@@ -172,15 +182,6 @@ def checkout():
         flash('Please log in to view your cart.', 'error')
         return redirect(url_for('login'))
 
-@app.route('/productSearchBar', methods=['GET'])
-def search():
-    cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM product")
-    data = cursor.fetchall()
-    cursor.close()
-    search_query = request
-
-    return render_template('catalog.html', Products=data)
 
 @app.route('/login', methods=['GET','POST'])
 def login():
