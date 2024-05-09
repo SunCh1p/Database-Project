@@ -342,5 +342,67 @@ span{
     align-items: center;
 }
 
+/*Cart CSS*/
+.cartHeader{
+    margin: 4%;
+    text-align: center;
+    border-bottom: 2px solid gray;
+}
+
+.cart-list{
+    margin: 5%;
+}
+
+.cartproduct{
+    padding: 2%;
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    grid-gap: 10px;
+    width: 100%;
+    border-bottom: solid 1px gray;
+}
+
+.cartTotalContainer{
+    margin: 4%;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
+
+.cartTotal{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: solid 1px gray;
+    justify-items: center;
+    align-items: center;
+}
+
+.cartTotalContainer2{
+    margin: 4%;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+}
+
+.cartCheckoutContainer{
+    display: grid;
+    align-items:center;
+    justify-items: center;
+}
+
+.cartCheckOut{
+    background-color: var(--LightBlue);
+    padding: 10px;
+    height: 100%;
+    width: 50%;
+    text-decoration: none;
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.cartCheckOut:hover{
+    background-color: var(--BorderLightBlue);
+    color: orange;
+}
+
 
 

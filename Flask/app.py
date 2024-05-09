@@ -11,9 +11,9 @@ app.secret_key = 'your secret key'
 
 #Configure MySQL
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'xjeffy'
-app.config['MYSQL_PASSWORD'] = '6bx8JcwD'
-app.config['MYSQL_DB'] = 'xjeffy'
+app.config['MYSQL_USER'] = 'cblaha1'
+app.config['MYSQL_PASSWORD'] = 'Uq2pg8gG'
+app.config['MYSQL_DB'] = 'cblaha1'
 
 #Initialize MySQL
 mysql = MySQL(app)
@@ -31,7 +31,7 @@ def index():
 @app.route('/catalog', methods=['GET', 'POST'])
 def catalog():
     if 'loggedin' not in session:
-        return redirect(url_for('login'))
+        return redirect('./login')
     if request.method == 'POST' and 'product_id' in request.form:
         # Get the product ID from the form data
         product_id = request.form.get('product_id')
@@ -74,17 +74,16 @@ def catalog():
 
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
+    if 'loggedin' not in session:
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         # Handle POST request to remove a product from the cart
         if 'loggedin' in session:
-            print("hello")
             remove = request.form['product_id']
             if remove:
-                print("hi")
                 # Retrieve the customer ID from the session
                 customer_id = session['id']
-                print("Customer ID:", customer_id)  # Add this print statement to check the customer ID
-                print(remove)
                 # Delete the item from the cart table
                 mysql.connection.cursor()
                 cursor = mysql.connection.cursor()
@@ -133,16 +132,12 @@ def checkout():
         #cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         if not re.match(r'^\d{2}/\d{2}$', expdate):
             msg = 'Invalid expdate address!'
-            print("hello1")
         elif not re.match(r'^\d{16}$', cardnum):
             msg = 'cardnum must contain only numbers!'
-            print("hello2")
         elif not re.match(r'^\d{3}$', Secode):
             msg=" Invalid CVC code"
-            print("hello3")
         elif not cardnum or not Secode or not expdate:
             msg = 'Please fill out the form!'
-            print("hello4")
         else:
             try:
                 cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -150,7 +145,6 @@ def checkout():
                 mysql.connection.commit()
                 cursor.close()
                 msg = 'Payment successful!'
-                print("Payment successful")
             except Exception as e:
                 msg = 'Error: %s' % str(e)
                 print("Error:", e)
@@ -236,7 +230,6 @@ def payment():
 
     elif request.method == 'POST' and 'remove_payment' in request.form:
         cardNum = request.form['remove_payment']
-        print(cardNum)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         sql = "DELETE FROM payment WHERE customer_ID = %s AND card_number = %s"
         values = (customer_id, cardNum)
@@ -274,7 +267,7 @@ def register():
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
             cursor.execute('INSERT INTO accounts VALUES (NULL, %s, %s, %s)', (username, hashed_password, email,))
             mysql.connection.commit()
-            msg = 'You have successfully registered!'
+            msg = 'You have successfully registered! Please sign in!'
         cursor.close()
     elif request.method == 'POST':
         msg = 'Please fill out registration form!'
@@ -284,7 +277,7 @@ def register():
 def logout():
     session.pop('username', None)
     session.pop('id', None)
-    session.pop('logged_in', None)
+    session.pop('loggedin', None)
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
