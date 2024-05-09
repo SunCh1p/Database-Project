@@ -200,7 +200,7 @@ def login():
     return render_template('/login.html')
   
 
-@app.route('/payment', methods=['GET', 'POST'])
+@app.route('/payment', methods=['GET','POST'], methods=['GET', 'POST'])
 def payment():
     # Check if logged in 
     if 'loggedin' not in session:
