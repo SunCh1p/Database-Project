@@ -11,9 +11,9 @@ app.secret_key = 'your secret key'
 
 #Configure MySQL
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'aalluhai'
-app.config['MYSQL_PASSWORD'] = 'EGj62ysf'
-app.config['MYSQL_DB'] = 'aalluhai'
+app.config['MYSQL_USER'] = 'xjeffy'
+app.config['MYSQL_PASSWORD'] = '6bx8JcwD'
+app.config['MYSQL_DB'] = 'xjeffy'
 
 #Initialize MySQL
 mysql = MySQL(app)
@@ -90,7 +90,7 @@ def cart():
         products = cursor.fetchall()
          
         sum = 0
-        quantitys=[]
+        quantities=[]
         for item in products:
              product_id = item[0]  
              price = item[4]
@@ -98,11 +98,11 @@ def cart():
              quantity= cursor.fetchone()
              if quantity:
                 sum+=quantity[0]*price
-                quantitys.append(quantity[0])
+                quantities.append(quantity[0])
 
         cursor.close()
 
-        return render_template('cart.html', products=products, total_price=sum ,total_quantity=quantitys)
+        return render_template('cart.html', products=products, total_price=sum ,total_quantity=quantities)
     else:
         flash('Please log in to view your cart.', 'error')
         return redirect(url_for('login'))
@@ -204,19 +204,48 @@ def login():
 
 @app.route('/payment', methods=['GET','POST'])
 def payment():
-    #if user is in session
-        if request.method == 'POST' and 'cardNum' in request.form and 'date' in request.form and 'ccv' in request.form and 'zip' in request.form:
-            cardNum = request.form['cardNum']
-            date = request.form['date']
-            ccv = request.form['ccv']
-            zip = request.form['zip']
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            #Check for sql injection
-            #If no injection, run sql query
-            #insert into table
-            cursor.close()
-        return render_template('/payment.html')
-#else redirect login
+    # Check if logged in 
+    if 'loggedin' not in session:
+        return redirect(url_for('login'))
+
+    # Retrieve customer_ID from session
+    customer_id = session.get('id')
+
+    # Display current payment info for the logged-in user
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT card_number FROM payment WHERE customer_ID = %s", (customer_id,))
+    existing_payments = cursor.fetchall()
+    cursor.close()
+
+    # Form for adding payment info 
+    if request.method == 'POST' and 'cardNum' in request.form and 'date' in request.form and 'cvc' in request.form and 'zip' in request.form:
+        cardNum = request.form['cardNum']
+        date = request.form['date']
+        cvc = request.form['cvc']
+        zip = request.form['zip']
+
+        # Adding info to the database
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        sql = "INSERT INTO payment (customer_ID, card_number, expiration_date, security_code) VALUES (%s, %s, %s, %s)"
+        values = (customer_id, cardNum, date, cvc)
+        cursor.execute(sql, values)
+        mysql.connection.commit()
+        cursor.close()
+        return redirect(url_for('payment'))
+
+    elif request.method == 'POST' and 'remove_payment' in request.form:
+        cardNum = request.form['remove_payment']
+        print(cardNum)
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        sql = "DELETE FROM payment WHERE customer_ID = %s AND card_number = %s"
+        values = (customer_id, cardNum)
+        cursor.execute(sql, values)
+        mysql.connection.commit()
+        cursor.close()
+        return redirect(url_for('payment'))
+
+    return render_template('/payment.html', existing_payments=existing_payments)
+
 
 @app.route('/register', methods=['GET','POST'])
 def register():

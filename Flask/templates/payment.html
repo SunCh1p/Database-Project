@@ -1,25 +1,90 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Payment Info</title>
-    </head>
-    <body>
-        <h2>Payment Information</h2>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Information</title>
+</head>
+<body>
+    <a href = "./" >Back</a>
+    <h2>Payment Information</h2>
 
-        <form action="/payment" method="post">
+    <!-- Display existing payments -->
+    <h3>Existing Payment Methods:</h3>
+    {% if existing_payments %}
+        <ul>
+            {% for payment in existing_payments %}
+                {% set last_four = (payment[0] | string)[-4:] %} <!-- Extract last four digits -->
+                <li>Card ending in **** **** **** {{ last_four }}</li> <!-- Display only last four digits -->
+                <form action="/payment" method="post">
+                    <input type="hidden" name="remove_payment" value="{{ payment[0] }}"> <!-- Use full card number for processing -->
+                    
+                    <button type="submit">Remove</button>
+                </form>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No existing payment methods found.</p>
+    {% endif %}
+
+    <!-- Add New Form of Payment -->
+    <h3>Add New Form of Payment:</h3>
+    <button id="showPaymentForm" class="btn btn-primary">Add New Payment Method</button>
+
+    <!-- Form for adding new payment method (initially hidden) -->
+    <div id="paymentForm" style="display: none;">
+        <form action="/payment" method="post" onsubmit="return validatePaymentForm()">
+            <!-- Your payment form fields here -->
             <label for="cardNum">Credit Card Number:</label><br>
-            <input type="text" id="cardNum" name="cardNum" required><br><br>
-            <label for="date">Expiration Date:</label><br>
-            <input type="text" id="date" name="date" required><br><br>
-            <label for="ccv"> CCV:</label><br>
-            <input type="int" id="ccv" name="ccv" required><br><br>
-            <label for="zip"> Zip Code:</label><br>
-            <input type="int" id="zip" name="zip" required><br><br>
+            <input type="text" id="cardNum" name="cardNum" required pattern="\d{16}" title="Credit card number must be 16 digits"><br><br>
+            <label for="date">Expiration Date (MM/YY):</label><br>
+            <input type="text" id="date" name="date" required pattern="^(0[1-9]|1[0-2])\/?([0-9]{2})$" title="Expiration date must be in MM/YY format"><br><br>
+            <label for="cvc">CVC:</label><br>
+            <input type="text" id="cvc" name="cvc" required pattern="\d{3}" title="CVC must be 3 digits"><br><br>
+            <label for="zip">Zip Code:</label><br>
+            <input type="text" id="zip" name="zip" required pattern="\d{5}" title="Zip code must be 5 digits"><br><br>
             <input type="submit" value="Submit">
-
-            
         </form> 
-    </body>
+    </div>
+
+    
+    <script>
+        document.getElementById("showPaymentForm").addEventListener("click", function() {
+            document.getElementById("paymentForm").style.display = "block";
+        });
+
+        function validatePaymentForm() {
+            var cardNum = document.getElementById("cardNum").value;
+            var date = document.getElementById("date").value;
+            var cvc = document.getElementById("cvc").value;
+            var zip = document.getElementById("zip").value;
+
+            // Validate card number (16 digits)
+            if (!/^\d{16}$/.test(cardNum)) {
+                alert("Please enter a valid credit card number (16 digits).");
+                return false;
+            }
+
+            // Validate expiration date (MM/YY)
+            if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(date)) {
+                alert("Please enter a valid expiration date (MM/YY format).");
+                return false;
+            }
+
+            // Validate CVC (3 digits)
+            if (!/^\d{3}$/.test(cvc)) {
+                alert("Please enter a valid CVC (3 digits).");
+                return false;
+            }
+
+            // Validate zip code (5 digits)
+            if (!/^\d{5}$/.test(zip)) {
+                alert("Please enter a valid zip code (5 digits).");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</body>
 </html>
