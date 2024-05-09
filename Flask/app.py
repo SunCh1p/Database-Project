@@ -170,8 +170,17 @@ def checkout():
                 sum+=quantity[0]*price
                 quantitys.append(quantity[0])
 
+        #Retrieve Payment Information for selected customer
+        customer_id = session.get('id')
+
+        #SQL query for retrieving payment information
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT card_number FROM payment WHERE customer_ID = %s", (customer_id,))
+        existing_payments = cursor.fetchall()
+        cursor.close()
+
         
-        return render_template('checkout.html',total_price=sum)
+        return render_template('checkout.html',total_price=sum, Products=products, quantity=quantitys)
     else:
         flash('Please log in to view your cart.', 'error')
         return redirect(url_for('login'))

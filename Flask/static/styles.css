@@ -316,10 +316,11 @@ span{
 }
 
 .productDesc{
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-items: center;
+    align-items: center;
     color: darkgray;
-    justify-content: space-between;
 }
 
 .catalogButton{
@@ -404,5 +405,50 @@ span{
     color: orange;
 }
 
+/*Checkout CSS*/
+.checkoutContainer{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    margin: 10%;
+}
+
+.checkout{
+
+}
+
+.orderSummary{
+    background-color: lightgray;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.orderItems{
+    max-height: 300px;
+    overflow-y: auto;
+    border-bottom: 2px solid gray;
+    padding: 10px;
+}
+
+.orderProduct{
+    display: grid;
+    grid-template: 1fr 1fr 1fr 1fr;
+    font-size:small;
+}
+
+.orderDetails{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    font-size: smaller;
+}
+
+.leftAlign{
+    text-align: right;
+}
+.checkoutTotal{
+    display: flex;
+    justify-content: space-between;
+}
 
 
