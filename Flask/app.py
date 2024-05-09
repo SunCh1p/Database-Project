@@ -71,6 +71,43 @@ def catalog():
     cursor.close()
     return render_template('catalog.html', Products=data)
 
+@app.route('/Profile', methods=['GET', 'POST'])
+def Profile():
+    msg=''
+    if('loggedin') in session:
+        current_customerID = session['id']
+        if request.method == 'POST':
+            first_name = request.form['first_name']
+            last_name = request.form['last_name']
+            street = request.form['street']
+            street_num = request.form['street_num']
+            apt_num = request.form['apt_num']
+            city = request.form['city']
+            zip_code = request.form['zip_code']
+            email=request.form['email']
+            cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            #cursor.execute('INSERT INTO customer VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)', (current_username, first_name, last_name, email, street_num, street,
+            #apt_num, city, zip_code, ))
+            cursor.execute("""INSERT INTO customer (customer_ID, FirstName, LastName, email, street_number, street_name, apt_num, city, zip_code)
+                              VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                              ON DUPLICATE KEY UPDATE
+                              FirstName = VALUES(FirstName),
+                              LastName = VALUES(LastName),
+                              email = VALUES(email),
+                              street_number = VALUES(street_number),
+                              street_name = VALUES(street_name),
+                              apt_num = VALUES(apt_num),
+                              city = VALUES(city),
+                              zip_code = VALUES(zip_code)""",
+                           (current_customerID, first_name, last_name, email, street_num, street, apt_num, city, zip_code))
+            mysql.connection.commit()
+            msg = 'You have successfully changed your profile information'
+            cursor.close()
+
+        return render_template('profilein.html')
+    else:
+        return redirect(url_for('login'))
+
 
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
