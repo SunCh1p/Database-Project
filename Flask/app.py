@@ -80,8 +80,9 @@ def Profile():
             if 'first_name' in request.form:
                 #sql query insert FirstName into customer
                 #change first name
+                pass
             if 'last_name' in request.form:
-                
+                pass
             
             first_name = request.form['first_name']
             last_name = request.form['last_name']
@@ -168,69 +169,72 @@ def cart():
 
 @app.route('/checkout', methods=['GET' , 'POST'])
 def checkout():
-    if request.method == 'POST' and 'cardnum' in request.form and 'Secode' in request.form and 'expdate' in request.form and 'loggedin' in session:
-        cardnum = request.form['cardnum']
-        Secode = request.form['Secode']
-        expdate = request.form['expdate']
-        #cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        if not re.match(r'^\d{2}/\d{2}$', expdate):
-            msg = 'Invalid expdate address!'
-        elif not re.match(r'^\d{16}$', cardnum):
-            msg = 'cardnum must contain only numbers!'
-        elif not re.match(r'^\d{3}$', Secode):
-            msg=" Invalid CVC code"
-        elif not cardnum or not Secode or not expdate:
-            msg = 'Please fill out the form!'
-        else:
-            try:
-                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-                cursor.execute('INSERT INTO payment (customer_ID,card_number, security_code, expiration_date) VALUES (%s, %s, %s, %s)', (session['id'],cardnum, Secode, expdate,))
-                mysql.connection.commit()
-                cursor.close()
-                msg = 'Payment successful!'
-            except Exception as e:
-                msg = 'Error: %s' % str(e)
-                print("Error:", e)
-        cursor.close()
-        
-
-
-    if 'loggedin' in session:
-        # Retrieve the customer ID from the session
-        customer_id = session['id']
-        cursor = mysql.connection.cursor()
-        cursor.execute("SELECT p.*, c.quantity FROM product p INNER JOIN cart c ON p.product_ID = c.product_ID WHERE c.customer_ID = %s", (customer_id,))
-        products = cursor.fetchall()
-         
-        sum = 0
-        quantitys=[]
-        for item in products:
-             product_id = item[0]  
-             price = item[4]
-             cursor.execute('SELECT quantity FROM cart WHERE product_ID = %s AND customer_ID = %s', (product_id, session['id']))
-             quantity= cursor.fetchone()
-             if quantity:
-                sum+=quantity[0]*price
-                quantitys.append(quantity[0])
-
-        #Retrieve Payment Information for selected customer
-        customer_id = session.get('id')
-
-        #SQL query for retrieving payment information
-        cursor = mysql.connection.cursor()
-        cursor.execute("SELECT card_number FROM payment WHERE customer_ID = %s", (customer_id,))
-        existing_payments = cursor.fetchall()
-        cursor.close()
-
-        
-        return render_template('checkout.html',total_price=sum, Products=products, quantity=quantitys)
-    else:
-        flash('Please log in to view your cart.', 'error')
+    if 'loggedin' not in session:
         return redirect(url_for('login'))
+
+    order = False
+    if request.method == 'POST' and 'card' in request.form:
+        order = True
+        card = request.form['card']
+
+    # Retrieve the customer ID from the session
+    customer_id = session['id']
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT p.*, c.quantity FROM product p INNER JOIN cart c ON p.product_ID = c.product_ID WHERE c.customer_ID = %s", (customer_id,))
+    products = cursor.fetchall()
+        
+    sum = 0
+    quantitys=[]
+    for item in products:
+        product_id = item[0]  
+        price = item[4]
+        cursor.execute('SELECT quantity FROM cart WHERE product_ID = %s AND customer_ID = %s', (product_id, session['id']))
+        quantity= cursor.fetchone()
+        if quantity:
+            sum+=quantity[0]*price
+            quantitys.append(quantity[0])
+
+    #Retrieve Payment Information for selected customer
+    customer_id = session.get('id')
+
+    #SQL query for retrieving payment information
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT card_number FROM payment WHERE customer_ID = %s", (customer_id,))
+    existing_payments = cursor.fetchall()
+    cursor.close()
+
+    #store store order in database and everything in cart
+    if order == True:
+        #cursor.mysql.connection.cursor()
+        count = 0
+        for product in products:
+            product_name = product[0]
+            quantity = quantitys[count]
+
+            #increment orders_ID
+            cursor = mysql.connection.cursor()
+            cursor.execute("SELECT MAX(orders_ID) from orders")
+            maxpayment = cursor.fetchone()
+            cursor.close()
+            maxpayment = maxpayment[0]
+            maxpayment += 1
+            
+            #insert order into orders table
+            cursor = mysql.connection.cursor()
+            cursor.execute("SELECT MAX(orders_ID) from orders")
+            maxpayment = cursor.fetchone()
+            cursor.close()
+
+            count+=1
+
+    return render_template('checkout.html',total_price=sum, cards=existing_payments, Products=products, quantity=quantitys)
+
 
 
 @app.route('/login', methods=['GET','POST'])
 def login():
+    if 'loggedin' in session:
+        return redirect(url_for('index'))
     msg = ''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
@@ -333,4 +337,4 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
-    app.run(host='localhost', port=5006)
+    app.run(host='localhost', port=5005)

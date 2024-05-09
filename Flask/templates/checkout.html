@@ -28,12 +28,26 @@
     <div class="checkoutContainer">
         <div class="checkout">
             <!-- Payment form -->
-            <form method="POST">
+            <h4>{{cards|length}} form(s) of payment</h4>
+            {%if cards%}
+                <p>Select or Enter a form of payment</p>
+            {%else%}
+                <a href="./payment">Add payment method</a><br>
+            {%endif%}
+            {%if cards%}
+                <form method="post" action="/checkout" id="form">
+                    {%for card in cards%}
+                        {% set last_four = (card[0] | string)[-4:] %}
+                        <input type="radio" name="card" value="{{card[0]}}">Card ending in **** **** **** {{ last_four }}<br>
+                    {%endfor%}
+                    <input type="submit" value="Checkout"><br>
+                    <p>Need to add payment?<a href="./payment"> Click Here</a><br></p>
+                    <div id="customAlert" style="display: none; position: absolute; background-color: #3C5B6F; color: white; padding: 10px; border-radius: 10px;"></div>
+                </form>
                 
-                <input type="submit" value="Card">
-            </form>
-            
+            {%endif%}
         </div>
+
         <div class="orderSummary">
             <h5>Order Summary</h5>
             <div class = "orderItems">
@@ -66,5 +80,19 @@
         </ul>
         <p class="text-center text-white">© 2024 GetItRight</p>
     </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#form').submit(function(e) {
+                if (!$('input[name="card"]:checked').val()) {
+                    e.preventDefault(); // Prevent form submission if no radio button is selected
+                    var formPosition = $('#form').offset();
+                    var alertPosition = formPosition.top + $('#form').outerHeight();
+                    $('#customAlert').css({ top: alertPosition + 'px', left: formPosition.left + 'px' }).text("Please select a form of payment!").show();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
