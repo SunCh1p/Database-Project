@@ -77,6 +77,12 @@ def Profile():
     if('loggedin') in session:
         current_customerID = session['id']
         if request.method == 'POST':
+            if 'first_name' in request.form:
+                #sql query insert FirstName into customer
+                #change first name
+            if 'last_name' in request.form:
+                
+            
             first_name = request.form['first_name']
             last_name = request.form['last_name']
             street = request.form['street']
